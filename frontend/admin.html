@@ -802,9 +802,13 @@ async function loadOrders() {
     if (!orders.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-table">No orders found</td></tr>'; return; }
     tbody.innerHTML = orders.map(o => {
       const items = tryParse(o.items, []);
+      const addr  = tryParse(o.shipping_address, {});
       return `
         <tr>
-          <td><strong>${o.order_number}</strong></td>
+          <td>
+            <strong>${o.order_number}</strong>
+            ${addr.customize_name_carving ? `<br><span style="font-size:0.72rem;background:#fffbeb;color:#b45309;border:1px solid #f59e0b;border-radius:4px;padding:1px 6px;margin-top:3px;display:inline-block">✏️ ${addr.customize_name_carving}</span>` : ''}
+          </td>
           <td>${o.user_name || o.user_email || 'Guest'}</td>
           <td style="font-size:0.78rem;color:var(--gray-600)">${items.length} item(s)</td>
           <td>₹${Number(o.total).toLocaleString('en-IN')}</td>
@@ -848,6 +852,11 @@ async function viewOrder(id) {
           <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.6">
             ${addr.name||''}<br>${addr.address||''}<br>${addr.city||''} ${addr.pincode||''}<br>${addr.state||''}<br>${addr.phone||''}
           </div>
+          ${addr.customize_name_carving ? `
+          <div style="margin-top:10px;padding:8px 12px;background:#fffbeb;border:1px solid #f59e0b;border-radius:6px;">
+            <div style="font-size:0.72rem;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">✏️ Customize Name Carving</div>
+            <div style="font-size:0.9rem;font-weight:600;color:#92400e">${addr.customize_name_carving}</div>
+          </div>` : ''}
         </div>
       </div>
       <div class="detail-box" style="margin-top:16px">

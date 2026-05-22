@@ -68,7 +68,7 @@ router.get('/products', async (req, res) => {
 router.post('/products', upload.single('image'), async (req, res) => {
   const { name, category_id, price, description, sizes, is_new } = req.body;
   const image_url = req.file
-    ? `${process.env.BACKEND_URL || ''}/uploads/${req.file.filename}`
+    ? `/uploads/${req.file.filename}`
     : null;
   const sizesArr = parseJSON(sizes, []);
 
@@ -87,7 +87,7 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
 
   const { name, category_id, price, description, sizes, is_new, is_active } = req.body;
   const image_url = req.file
-    ? `${process.env.BACKEND_URL || ''}/uploads/${req.file.filename}`
+    ? `/uploads/${req.file.filename}`
     : e.image_url;
   const sizesArr = sizes ? parseJSON(sizes, e.sizes) : e.sizes;
 
