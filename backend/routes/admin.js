@@ -253,6 +253,47 @@ router.put('/users/:id/role', async (req, res) => {
   res.json(r.rows[0]);
 });
 
+/* ─── CONTACT MESSAGES ──────────────────────────────────── */
+
+// GET all messages (with optional ?unread=true filter)
+router.get('/messages', async (req, res) => {
+  const { unread } = req.query;
+  const filter = unread === 'true' ? 'WHERE is_read = false' : '';
+  const r = await db.query(
+    `SELECT * FROM contact_messages ${filter} ORDER BY created_at DESC`
+  );
+  const unreadCount = await db.query(
+    'SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = false'
+  );
+  res.json({ messages: r.rows, total: r.rows.length, unread: parseInt(unreadCount.rows[0].c) });
+});
+
+// Mark as read
+router.put('/messages/:id/read', async (req, res) => {
+  const r = await db.query(
+    'UPDATE contact_messages SET is_read = true WHERE id = $1 RETURNING *',
+    [req.params.id]
+  );
+  if (!r.rows.length) return res.status(404).json({ error: 'Message not found' });
+  res.json(r.rows[0]);
+});
+
+// Mark as unread
+router.put('/messages/:id/unread', async (req, res) => {
+  const r = await db.query(
+    'UPDATE contact_messages SET is_read = false WHERE id = $1 RETURNING *',
+    [req.params.id]
+  );
+  if (!r.rows.length) return res.status(404).json({ error: 'Message not found' });
+  res.json(r.rows[0]);
+});
+
+// Delete
+router.delete('/messages/:id', async (req, res) => {
+  await db.query('DELETE FROM contact_messages WHERE id = $1', [req.params.id]);
+  res.json({ success: true });
+});
+
 /* ─── Utility ───────────────────────────────────────────── */
 function parseJSON(str, fallback) {
   try { return typeof str === 'string' ? JSON.parse(str) : str; }

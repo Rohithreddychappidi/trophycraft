@@ -42,13 +42,6 @@
   .cart-btn:hover{transform:scale(1.03)}
   #cart-count{background:rgba(255,255,255,0.3);border-radius:20px;padding:1px 6px;font-size:0.75rem}
 
-  /* SEARCH */
-  .search-wrap{background:var(--blue-light);padding:18px 2rem;display:flex;justify-content:center}
-  .search-inner{display:flex;width:100%;max-width:560px;background:#fff;border:1.5px solid var(--blue-mid);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(26,75,140,0.1)}
-  .search-inner input{flex:1;border:none;outline:none;padding:10px 16px;font-family:var(--font-body);font-size:0.9rem;color:var(--gray-800)}
-  .search-inner button{background:var(--blue);color:#fff;border:none;padding:10px 20px;cursor:pointer;font-size:0.875rem;font-weight:600;transition:background 0.15s}
-  .search-inner button:hover{background:var(--blue-mid)}
-
   /* PAGES */
   .page{display:none;animation:fadeIn 0.2s ease}
   .page.active{display:block}
@@ -171,7 +164,7 @@
   .empty-state{text-align:center;padding:48px 0;color:var(--gray-400)}
   .empty-state .empty-icon{font-size:2.5rem;margin-bottom:12px}
 
-  /* ── CART PANEL ─────────────────────────────────────── */
+  /* CART PANEL */
   .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.25s}
   .cart-overlay.open{opacity:1;pointer-events:all}
   .cart-panel{position:fixed;top:0;right:0;height:100%;width:420px;max-width:100%;background:#fff;z-index:301;transform:translateX(100%);transition:transform 0.3s ease;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,0.12)}
@@ -196,7 +189,7 @@
   .btn-checkout{width:100%;background:var(--gold);color:#fff;border:none;padding:13px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:background 0.15s}
   .btn-checkout:hover{background:#b8821f}
 
-  /* ── CHECKOUT MODAL ──────────────────────────────────── */
+  /* CHECKOUT MODAL */
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
   .modal-bg.open{display:flex}
   .modal{background:#fff;border-radius:var(--radius);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
@@ -225,7 +218,7 @@
   .btn-pay:hover{background:#b8821f}
   .btn-pay:disabled{background:var(--gray-400);cursor:not-allowed}
 
-  /* ── ORDER SUCCESS ────────────────────────────────────── */
+  /* ORDER SUCCESS */
   .success-modal-body{text-align:center;padding:40px 24px}
   .success-icon{font-size:3.5rem;margin-bottom:16px}
   .success-title{font-family:var(--font-display);font-size:1.6rem;color:var(--blue);margin-bottom:8px}
@@ -238,7 +231,7 @@
 </head>
 <body>
 
-<!-- ────────────────────── NAV ────────────────────────── -->
+<!-- NAV -->
 <nav>
   <div class="logo" onclick="goHome()">
     <div class="logo-icon">🏆</div>
@@ -250,16 +243,12 @@
     <button class="nav-link"        id="nav-about"    onclick="showPage('about')">About</button>
     <button class="nav-link"        id="nav-contact"  onclick="showPage('contact')">Contact</button>
   </div>
-  <!-- Nav Search Bar -->
   <div class="nav-search">
     <input type="text" id="nav-search-input" placeholder="🔍  Search trophies, awards…" oninput="handleSearch(this.value)" onkeydown="if(event.key==='Enter')handleSearch(this.value)">
     <button onclick="handleSearch(document.getElementById('nav-search-input').value)">→</button>
   </div>
-
   <div class="nav-actions">
-    <!-- Auth area: Google button renders here when logged out -->
     <div id="auth-area">
-      <!-- Google renders its button into this div -->
       <div id="google-btn-container" style="display:flex;align-items:center"></div>
     </div>
     <div id="user-area" style="display:none;align-items:center;gap:8px">
@@ -270,17 +259,12 @@
     <button class="cart-btn" onclick="openCart()">
       🛒 Cart <span id="cart-count">0</span>
     </button>
-    <!-- Google Identity: no auto_prompt, just a rendered button -->
-    <div id="g_id_onload"
-         data-auto_prompt="false"
-         style="display:none">
-    </div>
+    <div id="g_id_onload" data-auto_prompt="false" style="display:none"></div>
   </div>
 </nav>
 
-<!-- ══════════════════ HOME PAGE ══════════════════ -->
+<!-- HOME PAGE -->
 <div class="page active" id="page-home">
-
   <div class="hero" id="hero-section">
     <h1 id="hero-title">Premium Awards & Trophies</h1>
     <p id="hero-subtitle">Celebrate achievement with handcrafted metal, acrylic, wood, and fiber trophies — customized for every occasion.</p>
@@ -289,14 +273,12 @@
       <button class="btn-outline-white" onclick="showPage('contact')">Get a Quote</button>
     </div>
   </div>
-
   <div class="cat-section">
     <h2>Browse by Category</h2>
     <div class="cat-pills" id="home-cat-pills">
       <button class="cat-pill active" onclick="filterCat('All',this)">All</button>
     </div>
   </div>
-
   <div class="products-section">
     <div class="section-hdr">
       <h2>Featured Products</h2>
@@ -306,7 +288,6 @@
       <div class="loading-wrap"><div class="spinner"></div></div>
     </div>
   </div>
-
   <div class="features">
     <div class="feature-item"><div class="feature-icon">🛡️</div><div class="feature-title">Premium Quality</div><div class="feature-desc">Handcrafted with finest materials</div></div>
     <div class="feature-item"><div class="feature-icon">✏️</div><div class="feature-title">Custom Engraving</div><div class="feature-desc">Personalized text &amp; logos</div></div>
@@ -315,7 +296,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ PRODUCTS PAGE ══════════════════ -->
+<!-- PRODUCTS PAGE -->
 <div class="page" id="page-products">
   <div class="page-hero" style="padding:28px 2rem">
     <h1>Our Products</h1>
@@ -332,7 +313,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ ABOUT PAGE ══════════════════ -->
+<!-- ABOUT PAGE -->
 <div class="page" id="page-about">
   <div class="page-hero">
     <h1>About Golden Awards</h1>
@@ -360,7 +341,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ CONTACT PAGE ══════════════════ -->
+<!-- CONTACT PAGE -->
 <div class="page" id="page-contact">
   <div class="page-hero">
     <h1>Contact Us</h1>
@@ -370,9 +351,9 @@
     <div class="contact-info">
       <h2>Get in Touch</h2>
       <p>We'd love to hear from you. Reach out for bulk orders, custom designs, or any questions.</p>
-      <div class="contact-detail"><div class="c-icon">📍</div><div class="c-text">3-4-656/1 opp. Deepak Theatre, Narayanaguda, Hyderabad 500 029<br></div></div>
+      <div class="contact-detail"><div class="c-icon">📍</div><div class="c-text">3-4-656/1 opp. Deepak Theatre, Narayanaguda, Hyderabad 500 029</div></div>
       <div class="contact-detail"><div class="c-icon">📞</div><div class="c-text">+91 9701330640<br>Mon–Sat, 9am–6pm</div></div>
-      <div class="contact-detail"><div class="c-icon">✉️</div><div class="c-text">goldenawards131@gmail.com<br>Mail</div></div>
+      <div class="contact-detail"><div class="c-icon">✉️</div><div class="c-text">goldenawards131@gmail.com</div></div>
       <div class="contact-detail"><div class="c-icon">⏱️</div><div class="c-text">Bulk order response: within 4 hours<br>General queries: within 24 hours</div></div>
     </div>
     <div class="contact-form">
@@ -392,7 +373,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ FOOTER ══════════════════ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
@@ -419,7 +400,7 @@
   <div class="footer-bottom">© 2025 Golden Awards. All rights reserved. | Powered by Razorpay · NeonDB · Vercel</div>
 </footer>
 
-<!-- ══════════════════ CART PANEL ══════════════════ -->
+<!-- CART PANEL -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cart-panel">
   <div class="cart-header">
@@ -438,7 +419,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ CHECKOUT MODAL ══════════════════ -->
+<!-- CHECKOUT MODAL -->
 <div class="modal-bg" id="checkout-modal">
   <div class="modal">
     <div class="modal-header">
@@ -446,7 +427,6 @@
       <button class="modal-close" onclick="closeCheckout()">✕</button>
     </div>
     <div class="modal-body" id="checkout-body">
-      <!-- Order Summary -->
       <div class="modal-section-title">Order Summary</div>
       <div id="checkout-items"></div>
       <hr class="order-divider">
@@ -456,16 +436,12 @@
       <div class="order-total-row">
         <span>Total</span><span id="checkout-total-val"></span>
       </div>
-
-      <!-- Coupon -->
       <div class="modal-section-title" style="margin-top:16px">Coupon Code</div>
       <div class="coupon-row">
         <input type="text" id="coupon-input" placeholder="Enter coupon code" style="text-transform:uppercase">
         <button onclick="applyCoupon()">Apply</button>
       </div>
       <div class="coupon-msg" id="coupon-msg"></div>
-
-      <!-- Shipping Address -->
       <div class="modal-section-title" style="margin-top:16px">Shipping Address</div>
       <div class="grid-2">
         <div class="form-group-sm"><label>Full Name *</label><input type="text" id="sh-name" placeholder="Your name"></div>
@@ -477,20 +453,17 @@
         <div class="form-group-sm"><label>Pincode</label><input type="text" id="sh-pin" placeholder="Pincode"></div>
       </div>
       <div class="form-group-sm"><label>State</label><input type="text" id="sh-state" placeholder="State"></div>
-
-      <!-- Customize Name Carving -->
       <div class="modal-section-title" style="margin-top:16px">Customization</div>
       <div class="form-group-sm">
         <label>Customize Name Carving <span style="color:var(--gray-400);font-weight:400;font-size:0.78rem">(optional — name to be engraved on the trophy)</span></label>
         <input type="text" id="sh-carving" placeholder="e.g. John Smith / Team Alpha 2025" style="width:100%;box-sizing:border-box">
       </div>
-
       <button class="btn-pay" id="pay-btn" onclick="placeOrder()">Pay with Razorpay →</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════ SUCCESS MODAL ══════════════════ -->
+<!-- SUCCESS MODAL -->
 <div class="modal-bg" id="success-modal">
   <div class="modal">
     <div class="modal-header">
@@ -509,15 +482,11 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════
-   CONFIG — Change API_URL and GOOGLE_CLIENT_ID
-═══════════════════════════════════════════════════════════*/
 const CONFIG = {
-  API_URL:          'http://localhost:5000',   // ← your backend URL
-  GOOGLE_CLIENT_ID: '674257767533-nv0j6slcbri09u52amjsd0duchmus6eo.apps.googleusercontent.com',   // ← from Google Console
+  API_URL:          'http://localhost:5000',
+  GOOGLE_CLIENT_ID: '674257767533-nv0j6slcbri09u52amjsd0duchmus6eo.apps.googleusercontent.com',
 };
 
-/* ── State ─────────────────────────────────────────────── */
 let allProducts    = [];
 let categories     = [];
 let currentCat     = 'All';
@@ -527,10 +496,6 @@ let authUser       = JSON.parse(localStorage.getItem('tc_user') || 'null');
 let authToken      = localStorage.getItem('tc_token') || null;
 let pendingOrderId = null;
 let appliedCoupon  = null;
-
-/* ══════════════════════════════════════════════════════════
-   AUTH
-═══════════════════════════════════════════════════════════*/
 let googleInitialized = false;
 
 window.onload = () => {
@@ -545,21 +510,14 @@ window.onload = () => {
   waitForGoogleAndInit();
 };
 
-/* Only ever call initialize() ONCE — calling it twice causes the warning */
 function waitForGoogleAndInit() {
   if (googleInitialized) return;
   if (!window.google) { setTimeout(waitForGoogleAndInit, 200); return; }
   googleInitialized = true;
-
   google.accounts.id.initialize({
-    client_id:             CONFIG.GOOGLE_CLIENT_ID,
-    callback:              handleGoogleResponse,
-    auto_select:           false,
-    cancel_on_tap_outside: true,
-    use_fedcm_for_prompt:  false,   // ← disables FedCM (fixes the FedCM error)
+    client_id: CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleResponse,
+    auto_select: false, cancel_on_tap_outside: true, use_fedcm_for_prompt: false,
   });
-
-  /* Render the real Google button into our nav container */
   renderGoogleButton();
 }
 
@@ -567,55 +525,40 @@ function renderGoogleButton() {
   const container = document.getElementById('google-btn-container');
   if (!container || !window.google) return;
   google.accounts.id.renderButton(container, {
-    type:            'standard',
-    theme:           'outline',
-    size:            'medium',
-    text:            'signin_with',
-    shape:           'rectangular',
-    logo_alignment:  'left',
+    type:'standard', theme:'outline', size:'medium',
+    text:'signin_with', shape:'rectangular', logo_alignment:'left',
   });
 }
 
 async function handleGoogleResponse(resp) {
   try {
-    const res  = await apiPost('/api/auth/google', { credential: resp.credential });
-    authToken  = res.token;
-    authUser   = res.user;
+    const res = await apiPost('/api/auth/google', { credential: resp.credential });
+    authToken = res.token; authUser = res.user;
     localStorage.setItem('tc_token', authToken);
-    localStorage.setItem('tc_user',  JSON.stringify(authUser));
+    localStorage.setItem('tc_user', JSON.stringify(authUser));
     renderAuthUI();
     showToast(`Welcome, ${authUser.name}! 👋`);
-  } catch (e) {
-    alert('Sign-in failed: ' + e.message);
-  }
+  } catch (e) { alert('Sign-in failed: ' + e.message); }
 }
 
 function logout() {
-  authToken = null;
-  authUser  = null;
-  localStorage.removeItem('tc_token');
-  localStorage.removeItem('tc_user');
-  renderAuthUI();
-  showToast('Signed out');
+  authToken = null; authUser = null;
+  localStorage.removeItem('tc_token'); localStorage.removeItem('tc_user');
+  renderAuthUI(); showToast('Signed out');
 }
 
 function renderAuthUI() {
   const authArea = document.getElementById('auth-area');
   const userArea = document.getElementById('user-area');
   if (authUser) {
-    authArea.style.display = 'none';
-    userArea.style.display = 'flex';
-    document.getElementById('user-img').src  = authUser.avatar || '';
+    authArea.style.display = 'none'; userArea.style.display = 'flex';
+    document.getElementById('user-img').src = authUser.avatar || '';
     document.getElementById('user-name').textContent = authUser.name?.split(' ')[0] || '';
   } else {
-    authArea.style.display = '';
-    userArea.style.display = 'none';
+    authArea.style.display = ''; userArea.style.display = 'none';
   }
 }
 
-/* ══════════════════════════════════════════════════════════
-   API HELPERS
-═══════════════════════════════════════════════════════════*/
 async function apiFetch(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
@@ -627,32 +570,23 @@ async function apiFetch(path, opts = {}) {
 const apiGet  = (p)       => apiFetch(p);
 const apiPost = (p, body) => apiFetch(p, { method: 'POST', body: JSON.stringify(body) });
 
-/* ══════════════════════════════════════════════════════════
-   DATA LOADERS
-═══════════════════════════════════════════════════════════*/
 async function loadBanner() {
   try {
-    /* Public banners endpoint — no auth needed */
     const banners = await apiGet('/api/banners');
     if (banners?.length) {
       const b = banners[0];
       if (b.title)    document.getElementById('hero-title').textContent    = b.title;
       if (b.subtitle) document.getElementById('hero-subtitle').textContent = b.subtitle;
     }
-  } catch { /* fail silently — default hero text remains */ }
+  } catch {}
 }
 
 async function loadCategories() {
-  try {
-    categories = await apiGet('/api/products/categories');
-    buildCatPills();
-  } catch { console.warn('Could not load categories'); }
+  try { categories = await apiGet('/api/products/categories'); buildCatPills(); }
+  catch { console.warn('Could not load categories'); }
 }
 
-const CAT_EMOJIS = {
-  'Metal Trophy':'🥇','Acrylic Award':'💎','Wood Trophy':'🪵',
-  'Fiber Trophy':'🎖️','Gift':'🎁',
-};
+const CAT_EMOJIS = {'Metal Trophy':'🥇','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'🎖️','Gift':'🎁'};
 
 function buildCatPills() {
   const homePills = document.getElementById('home-cat-pills');
@@ -661,28 +595,17 @@ function buildCatPills() {
   prodPills.innerHTML = '<span>Filter:</span><button class="cat-pill active" onclick="filterCat2(\'All\',this)">All</button>';
   categories.forEach(c => {
     const e = CAT_EMOJIS[c.name] || '🏆';
-    homePills.insertAdjacentHTML('beforeend',
-      `<button class="cat-pill" onclick="filterCat('${c.name}',this)">${e} ${c.name}</button>`);
-    prodPills.insertAdjacentHTML('beforeend',
-      `<button class="cat-pill" onclick="filterCat2('${c.name}',this)">${c.name}</button>`);
+    homePills.insertAdjacentHTML('beforeend',`<button class="cat-pill" onclick="filterCat('${c.name}',this)">${e} ${c.name}</button>`);
+    prodPills.insertAdjacentHTML('beforeend',`<button class="cat-pill" onclick="filterCat2('${c.name}',this)">${c.name}</button>`);
   });
 }
 
 async function loadProducts() {
-  try {
-    allProducts = await apiGet('/api/products');
-  } catch (e) {
-    console.error('Failed to load products:', e);
-    allProducts = [];
-  }
+  try { allProducts = await apiGet('/api/products'); }
+  catch (e) { console.error('Failed to load products:', e); allProducts = []; }
 }
 
-/* ══════════════════════════════════════════════════════════
-   PRODUCT CARD BUILDER
-═══════════════════════════════════════════════════════════*/
-const EMOJIS = {
-  'Metal Trophy':'🏆','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'⭐','Gift':'🎁',
-};
+const EMOJIS = {'Metal Trophy':'🏆','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'⭐','Gift':'🎁'};
 
 function buildCard(p, gridKey) {
   const sizes   = Array.isArray(p.sizes) ? p.sizes : (JSON.parse(p.sizes || '[]'));
@@ -690,30 +613,23 @@ function buildCard(p, gridKey) {
   const imgHtml = p.image_url
     ? `<img src="${CONFIG.API_URL}${p.image_url.startsWith('/') ? '' : '/'}${p.image_url}" alt="${p.name}" loading="lazy">`
     : `<div class="card-img-placeholder">${EMOJIS[p.category_name] || '🏆'}</div>`;
-
-  const sizeBadges = top3.map(s =>
-    `<div class="size-badge">${s.label || s}</div>`).join('');
-
+  const sizeBadges = top3.map(s => `<div class="size-badge">${s.label || s}</div>`).join('');
   const qtyRows = top3.map((s, i) => {
     const key = s.key || String.fromCharCode(65 + i);
     const lbl = s.label || s;
-    return `
-      <div class="qty-row">
-        <div class="qty-size-tag">${key} – <span style="font-weight:400;font-size:0.7rem">${lbl}</span></div>
-        <div class="qty-controls">
-          <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',-1)">−</button>
-          <div class="qty-val" id="qv-${gridKey}-${p.id}-${key}">0</div>
-          <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',1)">+</button>
-        </div>
-      </div>`;
+    return `<div class="qty-row">
+      <div class="qty-size-tag">${key} – <span style="font-weight:400;font-size:0.7rem">${lbl}</span></div>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',-1)">−</button>
+        <div class="qty-val" id="qv-${gridKey}-${p.id}-${key}">0</div>
+        <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',1)">+</button>
+      </div></div>`;
   }).join('');
-
   const card = document.createElement('div');
   card.className = 'product-card';
   card.innerHTML = `
     <div class="card-img-wrap">
-      ${p.is_new ? '<div class="badge-new">New</div>' : ''}
-      ${imgHtml}
+      ${p.is_new ? '<div class="badge-new">New</div>' : ''}${imgHtml}
       <div class="size-hover">
         <div class="size-hover-title">Available Sizes</div>
         <div class="size-badges">${sizeBadges || '<div class="size-badge">One Size</div>'}</div>
@@ -732,108 +648,56 @@ function buildCard(p, gridKey) {
   return card;
 }
 
-/* ══════════════════════════════════════════════════════════
-   QTY HELPERS  (in-card quantities, not cart)
-═══════════════════════════════════════════════════════════*/
 const cardQty = {};
 function getCardQty(k, pid, sz) { return cardQty[`${k}_${pid}_${sz}`] || 0; }
 function setCardQty(k, pid, sz, v) { cardQty[`${k}_${pid}_${sz}`] = Math.max(0, v); }
-
 function changeQty(gridKey, pid, sz, delta) {
-  const cur = getCardQty(gridKey, pid, sz);
-  const nv  = Math.max(0, cur + delta);
+  const nv = Math.max(0, getCardQty(gridKey, pid, sz) + delta);
   setCardQty(gridKey, pid, sz, nv);
   const el = document.getElementById(`qv-${gridKey}-${pid}-${sz}`);
   if (el) el.textContent = nv;
 }
 
-/* ══════════════════════════════════════════════════════════
-   CART
-═══════════════════════════════════════════════════════════*/
 function addToCart(pid, gridKey) {
-  const p     = allProducts.find(x => x.id === pid);
+  const p = allProducts.find(x => x.id === pid);
   if (!p) return;
-  const sizes = Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes || '[]');
-  const top3  = sizes.slice(0, 3);
-  let added   = 0;
-
+  const top3 = (Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes || '[]')).slice(0, 3);
+  let added = 0;
   top3.forEach((s, i) => {
     const key = s.key || String.fromCharCode(65 + i);
     const lbl = s.label || s;
     const qty = getCardQty(gridKey, pid, key);
     if (qty < 1) return;
-
     const existing = cart.find(c => c.product_id === pid && c.size_key === key);
-    if (existing) {
-      existing.quantity += qty;
-    } else {
-      cart.push({
-        product_id:   pid,
-        product_name: p.name,
-        category:     p.category_name,
-        image_url:    p.image_url,
-        size_key:     key,
-        size_label:   lbl,
-        price:        Number(p.price),
-        quantity:     qty,
-      });
-    }
-    // Reset card qty display
+    if (existing) { existing.quantity += qty; }
+    else { cart.push({ product_id:pid, product_name:p.name, category:p.category_name, image_url:p.image_url, size_key:key, size_label:lbl, price:Number(p.price), quantity:qty }); }
     setCardQty(gridKey, pid, key, 0);
     const el = document.getElementById(`qv-${gridKey}-${pid}-${key}`);
     if (el) el.textContent = '0';
     added += qty;
   });
-
   if (added === 0) { alert('Please select at least one quantity!'); return; }
-  saveCart();
-  updateCartCount();
-  showToast(`Added ${added} item(s) to cart! 🛒`);
+  saveCart(); updateCartCount(); showToast(`Added ${added} item(s) to cart! 🛒`);
 }
 
-function removeFromCart(idx) {
-  cart.splice(idx, 1);
-  saveCart();
-  updateCartCount();
-  renderCartPanel();
-}
-
+function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); updateCartCount(); renderCartPanel(); }
 function saveCart() { localStorage.setItem('tc_cart', JSON.stringify(cart)); }
+function updateCartCount() { document.getElementById('cart-count').textContent = cart.reduce((s,i) => s + i.quantity, 0); }
 
-function updateCartCount() {
-  const total = cart.reduce((s, i) => s + i.quantity, 0);
-  document.getElementById('cart-count').textContent = total;
-}
-
-function openCart()  {
-  renderCartPanel();
-  document.getElementById('cart-overlay').classList.add('open');
-  document.getElementById('cart-panel').classList.add('open');
-}
-function closeCart() {
-  document.getElementById('cart-overlay').classList.remove('open');
-  document.getElementById('cart-panel').classList.remove('open');
-}
+function openCart() { renderCartPanel(); document.getElementById('cart-overlay').classList.add('open'); document.getElementById('cart-panel').classList.add('open'); }
+function closeCart() { document.getElementById('cart-overlay').classList.remove('open'); document.getElementById('cart-panel').classList.remove('open'); }
 
 function renderCartPanel() {
-  const list   = document.getElementById('cart-items-list');
+  const list = document.getElementById('cart-items-list');
   const footer = document.getElementById('cart-footer');
-  if (!cart.length) {
-    list.innerHTML = '<div class="cart-empty"><div class="ci">🛒</div><p>Your cart is empty</p></div>';
-    footer.style.display = 'none';
-    return;
-  }
-  list.innerHTML = '';
-  let subtotal = 0;
+  if (!cart.length) { list.innerHTML = '<div class="cart-empty"><div class="ci">🛒</div><p>Your cart is empty</p></div>'; footer.style.display = 'none'; return; }
+  list.innerHTML = ''; let subtotal = 0;
   cart.forEach((item, idx) => {
     subtotal += item.price * item.quantity;
-    const imgHtml = item.image_url
-      ? `<img src="${CONFIG.API_URL}${item.image_url.startsWith('/') ? '' : '/'}${item.image_url}" alt="">`
-      : EMOJIS[item.category] || '🏆';
+    const imgHtml = item.image_url ? `<img src="${CONFIG.API_URL}${item.image_url.startsWith('/') ? '' : '/'}${item.image_url}" alt="">` : EMOJIS[item.category] || '🏆';
     const div = document.createElement('div');
     div.className = 'cart-item';
-    div.innerHTML = `
-      <div class="cart-item-img">${imgHtml}</div>
+    div.innerHTML = `<div class="cart-item-img">${imgHtml}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.product_name}</div>
         <div class="cart-item-meta">Size: ${item.size_label} · Qty: ${item.quantity}</div>
@@ -846,74 +710,43 @@ function renderCartPanel() {
   footer.style.display = '';
 }
 
-/* ══════════════════════════════════════════════════════════
-   CHECKOUT
-═══════════════════════════════════════════════════════════*/
 function openCheckout() {
-  if (!authUser) {
-    closeCart();
-    triggerGoogleSignIn();
-    showToast('Please sign in to checkout');
-    return;
-  }
+  if (!authUser) { closeCart(); showToast('Please sign in to checkout'); return; }
   if (!cart.length) return;
-  closeCart();
-  appliedCoupon = null;
+  closeCart(); appliedCoupon = null;
   document.getElementById('coupon-input').value = '';
   document.getElementById('coupon-msg').textContent = '';
   renderCheckoutSummary();
-
-  // Pre-fill name/phone from user
-  document.getElementById('sh-name').value  = authUser.name || '';
-
+  document.getElementById('sh-name').value = authUser.name || '';
   document.getElementById('checkout-modal').classList.add('open');
 }
 function closeCheckout() { document.getElementById('checkout-modal').classList.remove('open'); }
 
 function renderCheckoutSummary() {
   const container = document.getElementById('checkout-items');
-  let subtotal = 0;
-  container.innerHTML = '';
+  let subtotal = 0; container.innerHTML = '';
   cart.forEach(item => {
     subtotal += item.price * item.quantity;
-    container.insertAdjacentHTML('beforeend', `
-      <div class="order-item-row">
-        <span>${item.product_name} (${item.size_label}) ×${item.quantity}</span>
-        <span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
-      </div>`);
+    container.insertAdjacentHTML('beforeend', `<div class="order-item-row"><span>${item.product_name} (${item.size_label}) ×${item.quantity}</span><span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span></div>`);
   });
-
   const discount = appliedCoupon ? appliedCoupon.discount_amount : 0;
-  const total    = subtotal - discount;
-
-  const discRow = document.getElementById('checkout-discount-row');
-  if (discount > 0) {
-    discRow.style.display = '';
-    document.getElementById('checkout-discount-val').textContent = `−₹${discount.toLocaleString('en-IN')}`;
-  } else {
-    discRow.style.display = 'none';
-  }
-  document.getElementById('checkout-total-val').textContent = `₹${total.toLocaleString('en-IN')}`;
+  const discRow  = document.getElementById('checkout-discount-row');
+  if (discount > 0) { discRow.style.display = ''; document.getElementById('checkout-discount-val').textContent = `−₹${discount.toLocaleString('en-IN')}`; }
+  else { discRow.style.display = 'none'; }
+  document.getElementById('checkout-total-val').textContent = `₹${(subtotal - discount).toLocaleString('en-IN')}`;
 }
 
 async function applyCoupon() {
   const code = document.getElementById('coupon-input').value.trim();
   const msg  = document.getElementById('coupon-msg');
   if (!code) { msg.textContent = 'Enter a coupon code'; msg.className = 'coupon-msg err'; return; }
-
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   try {
-    const res  = await apiPost('/api/orders/validate-coupon', { code, subtotal });
+    const res = await apiPost('/api/orders/validate-coupon', { code, subtotal });
     appliedCoupon = res;
     msg.textContent = `✓ ${res.discount_type === 'percent' ? res.discount_value + '% off' : '₹'+res.discount_value+' off'} applied!`;
-    msg.className = 'coupon-msg ok';
-    renderCheckoutSummary();
-  } catch (e) {
-    appliedCoupon = null;
-    msg.textContent = e.message;
-    msg.className = 'coupon-msg err';
-    renderCheckoutSummary();
-  }
+    msg.className = 'coupon-msg ok'; renderCheckoutSummary();
+  } catch (e) { appliedCoupon = null; msg.textContent = e.message; msg.className = 'coupon-msg err'; renderCheckoutSummary(); }
 }
 
 async function placeOrder() {
@@ -921,88 +754,42 @@ async function placeOrder() {
   const phone = document.getElementById('sh-phone').value.trim();
   const addr  = document.getElementById('sh-addr').value.trim();
   if (!name || !phone || !addr) { alert('Please fill in name, phone, and address.'); return; }
-
   const btn = document.getElementById('pay-btn');
-  btn.disabled = true;
-  btn.textContent = 'Creating order…';
-
+  btn.disabled = true; btn.textContent = 'Creating order…';
   try {
-    const shipping_address = {
-      name,
-      phone,
-      address: addr,
-      city:  document.getElementById('sh-city').value.trim(),
+    const shipping_address = { name, phone, address: addr,
+      city: document.getElementById('sh-city').value.trim(),
       state: document.getElementById('sh-state').value.trim(),
       pincode: document.getElementById('sh-pin').value.trim(),
       customize_name_carving: document.getElementById('sh-carving').value.trim(),
     };
-
-    const items = cart.map(c => ({
-      product_id: c.product_id,
-      size_key:   c.size_key,
-      size_label: c.size_label,
-      quantity:   c.quantity,
-    }));
-
-    const result = await apiPost('/api/orders', {
-      items,
-      coupon_code: appliedCoupon?.code || null,
-      shipping_address,
-    });
-
-    pendingOrderId = result.order.id;
-    closeCheckout();
-
-    // Launch Razorpay
+    const items = cart.map(c => ({ product_id:c.product_id, size_key:c.size_key, size_label:c.size_label, quantity:c.quantity }));
+    const result = await apiPost('/api/orders', { items, coupon_code: appliedCoupon?.code || null, shipping_address });
+    pendingOrderId = result.order.id; closeCheckout();
     const rzp = new Razorpay({
-      key:         result.razorpay.key_id,
-      order_id:    result.razorpay.order_id,
-      amount:      result.razorpay.amount,
-      currency:    result.razorpay.currency,
-      name:        result.razorpay.name,
-      description: result.razorpay.description,
-      prefill: {
-        name,
-        contact: phone,
-        email: authUser?.email || '',
-      },
+      key: result.razorpay.key_id, order_id: result.razorpay.order_id,
+      amount: result.razorpay.amount, currency: result.razorpay.currency,
+      name: result.razorpay.name, description: result.razorpay.description,
+      prefill: { name, contact: phone, email: authUser?.email || '' },
       theme: { color: '#1a4b8c' },
       handler: (response) => verifyPayment(response),
-      modal: {
-        ondismiss: () => {
-          btn.disabled = false;
-          btn.textContent = 'Pay with Razorpay →';
-          openCheckout();
-        }
-      }
+      modal: { ondismiss: () => { btn.disabled = false; btn.textContent = 'Pay with Razorpay →'; openCheckout(); } }
     });
     rzp.open();
-  } catch (e) {
-    alert('Error: ' + e.message);
-    btn.disabled = false;
-    btn.textContent = 'Pay with Razorpay →';
-  }
+  } catch (e) { alert('Error: ' + e.message); btn.disabled = false; btn.textContent = 'Pay with Razorpay →'; }
 }
 
 async function verifyPayment(rzpResp) {
   try {
     await apiPost(`/api/orders/${pendingOrderId}/verify`, {
-      razorpay_order_id:   rzpResp.razorpay_order_id,
+      razorpay_order_id: rzpResp.razorpay_order_id,
       razorpay_payment_id: rzpResp.razorpay_payment_id,
-      razorpay_signature:  rzpResp.razorpay_signature,
+      razorpay_signature: rzpResp.razorpay_signature,
     });
-
-    // Clear cart
-    cart = [];
-    saveCart();
-    updateCartCount();
-    appliedCoupon = null;
-
+    cart = []; saveCart(); updateCartCount(); appliedCoupon = null;
     document.getElementById('success-order-num').textContent = `Order #${pendingOrderId}`;
     document.getElementById('success-modal').classList.add('open');
-  } catch (e) {
-    alert('Payment verified but order update failed. Contact support with payment ID: ' + rzpResp.razorpay_payment_id);
-  }
+  } catch (e) { alert('Payment verified but order update failed. Contact support with payment ID: ' + rzpResp.razorpay_payment_id); }
 }
 
 function closeSuccess() {
@@ -1011,20 +798,13 @@ function closeSuccess() {
   document.getElementById('pay-btn').textContent = 'Pay with Razorpay →';
 }
 
-/* ══════════════════════════════════════════════════════════
-   GRID RENDER / FILTER / SEARCH
-═══════════════════════════════════════════════════════════*/
 function renderGrid(gridId, cat, featured) {
   const el = document.getElementById(gridId);
   if (!el) return;
   el.innerHTML = '';
-
   let list = cat === 'All' ? allProducts : allProducts.filter(p => p.category_name === cat);
   if (featured) list = list.slice(0, 6);
-  if (!list.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products found</p></div>';
-    return;
-  }
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products found</p></div>'; return; }
   const gk = gridId === 'home-grid' ? 'hg' : 'pg';
   list.forEach(p => el.appendChild(buildCard(p, gk)));
 }
@@ -1044,32 +824,19 @@ function filterCat2(cat, btn) {
 }
 
 function handleSearch(val) {
-  if (!val.trim()) {
-    renderGrid('home-grid', currentCat, true);
-    renderGrid('products-grid', currentCat2, false);
-    return;
-  }
+  if (!val.trim()) { renderGrid('home-grid', currentCat, true); renderGrid('products-grid', currentCat2, false); return; }
   const q = val.toLowerCase();
-  const filtered = allProducts.filter(p =>
-    p.name.toLowerCase().includes(q) || (p.category_name || '').toLowerCase().includes(q)
-  );
-  const hg = document.getElementById('home-grid');
-  const pg = document.getElementById('products-grid');
-  hg.innerHTML = '';
-  pg.innerHTML = '';
+  const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q) || (p.category_name || '').toLowerCase().includes(q));
+  const hg = document.getElementById('home-grid'); const pg = document.getElementById('products-grid');
+  hg.innerHTML = ''; pg.innerHTML = '';
   if (!filtered.length) {
     const msg = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products match your search</p></div>';
-    hg.innerHTML = msg;
-    pg.innerHTML = msg;
-    return;
+    hg.innerHTML = msg; pg.innerHTML = msg; return;
   }
   filtered.slice(0, 6).forEach(p => hg.appendChild(buildCard(p, 'hg')));
   filtered.forEach(p => pg.appendChild(buildCard(p, 'pg')));
 }
 
-/* ══════════════════════════════════════════════════════════
-   PAGE NAVIGATION
-═══════════════════════════════════════════════════════════*/
 function showPage(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
@@ -1080,24 +847,41 @@ function showPage(p) {
 }
 function goHome() { showPage('home'); }
 
-/* ══════════════════════════════════════════════════════════
-   CONTACT FORM
-═══════════════════════════════════════════════════════════*/
-function submitContact() {
-  const name = document.getElementById('cf-name').value.trim();
+/* CONTACT FORM — upgraded async version (from file 2) */
+async function submitContact() {
+  const name  = document.getElementById('cf-name').value.trim();
   const email = document.getElementById('cf-email').value.trim();
+  const phone = document.getElementById('cf-phone').value.trim();
+  const type  = document.getElementById('cf-type').value;
+  const msg   = document.getElementById('cf-msg').value.trim();
+
   if (!name || !email) { alert('Please enter your name and email.'); return; }
-  showToast('Message sent! We\'ll get back to you within 24 hours. ✉️');
-  ['cf-name','cf-email','cf-phone','cf-msg'].forEach(id => document.getElementById(id).value = '');
+  if (!msg)            { alert('Please enter a message.'); return; }
+
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(CONFIG.API_URL + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, enquiry_type: type, message: msg }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to send');
+    showToast('Message sent! We\'ll get back to you within 24 hours. ✉️');
+    ['cf-name','cf-email','cf-phone','cf-msg'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('cf-type').selectedIndex = 0;
+  } catch (e) {
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send Message →';
+  }
 }
 
-/* ══════════════════════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════════════════════*/
 function showToast(msg) {
   const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
+  t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2800);
 }
