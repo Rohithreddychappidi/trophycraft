@@ -715,7 +715,7 @@ async function loadProducts() {
   } catch (e) { showToast(e.message,'error'); }
 }
 
-function openProductModal(productId) {
+async function openProductModal(productId) {
   editingProductId = productId || null;
   document.getElementById('product-modal-title').textContent = productId ? 'Edit Product' : 'Add Product';
   document.getElementById('pm-id').value    = productId || '';
@@ -727,7 +727,10 @@ function openProductModal(productId) {
   document.getElementById('pm-img').value   = '';
   document.getElementById('pm-img-preview').style.display = 'none';
 
-  const catSel = document.getElementById('pm-cat');
+ const catSel = document.getElementById('pm-cat');
+  if (!allCategories.length) {
+    try { allCategories = await apiGet('/api/admin/categories'); } catch(e) {}
+  }
   catSel.innerHTML = allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
   // init 3 empty size rows
@@ -889,6 +892,7 @@ async function viewOrder(id) {
           <h4>Shipping Address</h4>
           <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.6">
             ${addr.name||''}<br>${addr.address||''}<br>${addr.city||''} ${addr.pincode||''}<br>${addr.state||''}<br>${addr.phone||''}
+${addr.customize_name_carving ? `<br><strong style="color:var(--blue)">✏️ Carving:</strong> ${addr.customize_name_carving}` : ''}
           </div>
         </div>
       </div>
