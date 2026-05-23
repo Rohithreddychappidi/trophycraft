@@ -150,7 +150,8 @@
   /* FOOTER */
   footer{background:var(--blue);color:rgba(255,255,255,0.8);padding:28px 2rem;margin-top:0}
   .footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:24px;margin-bottom:20px}
-  .footer-brand{font-family:var(--font-display);color:#fff;font-size:1.05rem;margin-bottom:8px}
+  .footer-brand{font-family:var(--font-display);color:#fff;font-size:1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.footer-logo-img{width:48px;height:48px;object-fit:contain;border-radius:50%;background:var(--gold);padding:4px}
   .footer-desc{font-size:0.82rem;line-height:1.6;opacity:0.75}
   .footer-col h4{font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;color:rgba(255,255,255,0.6)}
   .footer-col a{display:block;font-size:0.82rem;color:rgba(255,255,255,0.75);text-decoration:none;margin-bottom:5px;cursor:pointer}
@@ -261,7 +262,7 @@
 <!-- NAV -->
 <nav>
   <div class="logo" onclick="goHome()">
-    <div class="logo-icon">🏆</div>
+    <div class="logo-icon"><img src="your-logo.png" style="width:20px;height:20px;object-fit:contain;border-radius:50%"></div>
     Golden Awards
   </div>
   <div class="nav-links">
@@ -418,7 +419,10 @@
 <footer>
   <div class="footer-inner">
     <div>
-      <div class="footer-brand">🏆 Golden Awards</div>
+      <div class="footer-brand">
+        <img src="your-logo.png" class="footer-logo-img" alt="Golden Awards Logo">
+        Golden Awards
+      </div>
       <div class="footer-desc">India's premier awards &amp; trophy destination. Quality crafted, personally delivered.</div>
     </div>
     <div class="footer-col">
@@ -440,7 +444,6 @@
   </div>
   <div class="footer-bottom">© 2025 Golden Awards. All rights reserved. | Powered by Razorpay · NeonDB · Vercel</div>
 </footer>
-
 <!-- CART PANEL -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cart-panel">
