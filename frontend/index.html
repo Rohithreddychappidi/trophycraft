@@ -67,15 +67,15 @@
   .cat-pill:hover,.cat-pill.active{background:var(--blue);color:#fff}
 
   /* PRODUCTS GRID */
-  .products-section{padding:20px 2rem 40px;background:var(--gray-50)}
+  .products-section{padding:16px 1rem 40px;background:var(--gray-50)}
   .section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
   .section-hdr h2{font-family:var(--font-display);font-size:1.4rem;color:var(--gray-800)}
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,260px));gap:18px;justify-content:center}
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;justify-content:center}
 
   /* PRODUCT CARD */
   .product-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);overflow:visible;transition:box-shadow 0.2s,transform 0.2s;position:relative;cursor:pointer}
   .product-card:hover{box-shadow:0 8px 24px rgba(26,75,140,0.13);transform:translateY(-3px)}
-  .card-img-wrap{position:relative;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;background:var(--blue-light);height:180px;display:flex;align-items:center;justify-content:center}
+  .card-img-wrap{position:relative;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;background:var(--blue-light);height:150px;display:flex;align-items:center;justify-content:center}
   .card-img-wrap img{width:100%;height:100%;object-fit:cover}
   .card-img-placeholder{font-size:3.5rem;opacity:0.5}
   .size-hover{position:absolute;inset:0;background:rgba(26,75,140,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity 0.2s;border-radius:var(--radius) var(--radius) 0 0}
@@ -103,6 +103,54 @@
 
   /* BADGE */
   .badge-new{position:absolute;top:10px;left:10px;background:var(--gold);color:#fff;font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:3px 8px;border-radius:20px;z-index:2;text-transform:uppercase}
+
+  /* PRODUCT DETAIL MODAL */
+  .product-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+  .product-modal-bg.open{display:flex}
+  .product-modal{background:#fff;border-radius:var(--radius);width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+  .product-modal-header{background:var(--blue);color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--radius) var(--radius) 0 0;position:sticky;top:0;z-index:1}
+  .product-modal-header h2{font-family:var(--font-display);font-size:1.2rem;margin:0}
+  .product-modal-close{background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;padding:0;line-height:1;opacity:0.8}
+  .product-modal-close:hover{opacity:1}
+  .product-modal-body{padding:22px}
+  .product-modal-img{width:100%;height:280px;background:var(--blue-light);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:18px}
+  .product-modal-img img{width:100%;height:100%;object-fit:cover}
+  .product-modal-img .pm-placeholder{font-size:5rem;opacity:0.4}
+  .pm-cat{font-size:0.72rem;color:var(--blue-mid);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+  .pm-name{font-family:var(--font-display);font-size:1.5rem;color:var(--gray-800);margin-bottom:10px;font-weight:700}
+  .pm-desc{color:var(--gray-600);line-height:1.7;margin-bottom:20px;font-size:0.9rem}
+  .pm-sizes-title{font-size:0.78rem;font-weight:700;color:var(--gray-800);margin-bottom:10px;letter-spacing:0.5px;text-transform:uppercase}
+  .pm-sizes{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+  .pm-size-row{border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s}
+  .pm-size-row.has-qty{border-color:var(--blue);background:var(--blue-light)}
+  .pm-size-info{flex:1}
+  .pm-size-label{font-weight:600;font-size:0.95rem;color:var(--gray-800)}
+  .pm-size-price{font-size:1rem;font-weight:700;color:var(--blue);margin-top:2px}
+  .pm-qty-wrap{display:flex;align-items:center;gap:8px}
+  .pm-qty-btn{width:30px;height:30px;border:2px solid var(--blue);background:#fff;border-radius:6px;cursor:pointer;font-size:1.1rem;color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 0.15s;line-height:1}
+  .pm-qty-btn:hover{background:var(--blue);color:#fff}
+  .pm-qty-val{font-size:0.95rem;font-weight:700;color:var(--gray-800);min-width:26px;text-align:center}
+  .pm-add-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:13px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:4px}
+  .pm-add-btn:hover{background:#b8821f;transform:translateY(-1px)}
+
+  /* SORT */
+  .sort-wrap{display:flex;align-items:center;gap:8px}
+  .sort-select{border:1.5px solid var(--blue);background:#fff;color:var(--blue);padding:6px 12px;border-radius:6px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:var(--font-body);outline:none;transition:all 0.15s}
+  .sort-select:hover,.sort-select:focus{background:var(--blue-light)}
+
+  /* PRICE RANGE SLIDER */
+  .price-filter-bar{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .price-filter-label{font-size:0.78rem;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+  .price-slider-wrap{flex:1;min-width:180px;position:relative;height:28px;display:flex;align-items:center}
+  .price-slider-track{position:absolute;left:0;right:0;height:4px;background:var(--gray-200);border-radius:2px}
+  .price-slider-range{position:absolute;height:4px;background:var(--blue);border-radius:2px}
+  .price-slider-wrap input[type=range]{position:absolute;width:100%;-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;height:4px}
+  .price-slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 1px 4px rgba(26,75,140,0.3);cursor:pointer;pointer-events:all;transition:transform 0.1s}
+  .price-slider-wrap input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+  .price-slider-wrap input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #fff;cursor:pointer;pointer-events:all}
+  .price-range-display{font-size:0.85rem;font-weight:700;color:var(--blue);white-space:nowrap;min-width:140px;text-align:right}
+  .price-reset-btn{background:none;border:1px solid var(--gray-300);color:var(--gray-500);padding:4px 10px;border-radius:5px;font-size:0.75rem;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+  .price-reset-btn:hover{border-color:var(--blue);color:var(--blue)}
 
   /* FEATURES */
   .features{background:var(--blue);padding:32px 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px}
@@ -143,7 +191,7 @@
   .btn-submit:hover{background:var(--blue-mid)}
 
   /* PRODUCTS PAGE */
-  .products-page-wrap{padding:24px 2rem 40px;background:var(--gray-50);min-height:400px}
+  .products-page-wrap{padding:16px 1rem 40px;background:var(--gray-50);min-height:400px}
   .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
   .filter-bar span{font-size:0.85rem;color:var(--gray-600);font-weight:500}
 
@@ -254,7 +302,61 @@
   .myorders-login p{color:var(--gray-600);margin-bottom:16px}
 
   /* TOAST */
-  .toast{position:fixed;bottom:24px;right:24px;background:var(--blue);color:#fff;padding:12px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;z-index:999;animation:fadeIn 0.2s ease;pointer-events:none}
+ 
+ .toast{position:fixed;bottom:24px;right:24px;background:var(--blue);color:#fff;padding:12px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;z-index:999;animation:fadeIn 0.2s ease;pointer-events:none}
+  @media (max-width: 480px) {
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .card-img-wrap{height:130px}
+  .card-body{padding:10px}
+  .card-name{font-size:0.85rem;margin-bottom:6px}
+  .card-price{font-size:0.9rem;margin-bottom:0}
+  .page-hero h1{font-size:1.4rem}
+  .page-hero p{font-size:0.85rem}
+  .products-page-wrap{padding:12px 0.75rem 30px}
+  .filter-bar{gap:6px}
+  .cat-pill{padding:5px 12px;font-size:0.78rem}
+  .price-filter-bar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  width:fit-content;
+  max-width:420px;
+
+  padding:12px 16px;
+  margin:0 auto 24px;
+
+  border-radius:16px;
+}
+
+.price-slider-wrap{
+  width:120px;
+  flex:none;
+}
+
+.price-range-display{
+  font-size:0.78rem;
+  min-width:auto;
+  white-space:nowrap;
+}
+  .section-hdr{flex-direction:column;align-items:flex-start;gap:10px}
+  .product-modal{max-height:95vh}
+  .product-modal-img{height:200px}
+  .pm-name{font-size:1.2rem}
+  .sort-wrap{font-size:0.78rem}
+  .sort-select{padding:5px 8px;font-size:0.78rem}
+  nav .nav-link span{display:none}
+  nav{padding:0 0.75rem;height:auto;flex-wrap:wrap;gap:6px;padding-top:8px;padding-bottom:8px}
+.nav-links{order:3;width:100%;display:flex;justify-content:space-between;gap:0;background:rgba(255,255,255,0.08);border-radius:6px;padding:2px}
+.nav-link{font-size:0.72rem;padding:5px 6px;flex:1;text-align:center}
+.nav-search{order:4;width:100%;height:32px}
+.nav-search:focus-within{width:100%}
+.logo{font-size:0.9rem}
+.nav-actions{order:2;margin-left:auto;gap:6px}
+.cart-btn{font-size:0.78rem;padding:5px 10px}
+.user-avatar{width:26px;height:26px}
+#user-name{display:none}
+}
 </style>
 </head>
 <body>
@@ -311,7 +413,22 @@
   <div class="products-section">
     <div class="section-hdr">
       <h2>Featured Products</h2>
-      <button style="background:none;border:1px solid var(--blue);color:var(--blue);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.82rem;font-weight:600" onclick="showPage('products')">View All →</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="sort-wrap"><span style="font-size:0.82rem;color:var(--gray-600);font-weight:500">Sort:</span><select class="sort-select" id="home-sort-select" onchange="applyHomeFilters()"><option value="">Default</option><option value="price_low">Price: Low → High</option><option value="price_high">Price: High → Low</option><option value="newest">Newest First</option></select></div>
+        <button style="background:none;border:1px solid var(--blue);color:var(--blue);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.82rem;font-weight:600" onclick="showPage('products')">View All →</button>
+      </div>
+    </div>
+    <div class="price-filter-bar" 
+     style="width:fit-content;max-width:380px;margin:18px 0 18px auto;">
+      <span class="price-filter-label">💰 Price Range</span>
+      <div class="price-slider-wrap" id="home-slider-wrap" style="width:110px;">
+        <div class="price-slider-track"></div>
+        <div class="price-slider-range" id="home-slider-range"></div>
+        <input type="range" id="home-price-min" min="50" max="50000" value="50" step="50" oninput="updatePriceSlider('home')">
+        <input type="range" id="home-price-max" min="50" max="50000" value="50000" step="50" oninput="updatePriceSlider('home')">
+      </div>
+      <div class="price-range-display" id="home-price-display">₹50 – ₹50,000</div>
+      <button class="price-reset-btn" onclick="resetPriceFilter('home')">Reset</button>
     </div>
     <div class="products-grid" id="home-grid">
       <div class="loading-wrap"><div class="spinner"></div></div>
@@ -332,9 +449,20 @@
     <p>Explore our full range of premium trophies and awards</p>
   </div>
   <div class="products-page-wrap">
-    <div class="filter-bar" id="products-cat-pills">
-      <span>Filter:</span>
-      <button class="cat-pill active" onclick="filterCat2('All',this)">All</button>
+    <div class="filter-bar" style="justify-content:space-between;align-items:center">
+      <div id="products-cat-pills" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span>Filter:</span><button class="cat-pill active" onclick="filterCat2('All',this)">All</button></div>
+      <div class="sort-wrap"><span style="font-size:0.82rem;color:var(--gray-600);font-weight:500">Sort:</span><select class="sort-select" id="sort-select" onchange="applyProductsFilters()"><option value="">Default</option><option value="price_low">Price: Low → High</option><option value="price_high">Price: High → Low</option><option value="newest">Newest First</option></select></div>
+    </div>
+    <div class="price-filter-bar">
+      <span class="price-filter-label">💰 Price Range</span>
+      <div class="price-slider-wrap" id="prod-slider-wrap">
+        <div class="price-slider-track"></div>
+        <div class="price-slider-range" id="prod-slider-range"></div>
+        <input type="range" id="prod-price-min" min="50" max="50000" value="50" step="50" oninput="updatePriceSlider('prod')">
+        <input type="range" id="prod-price-max" min="50" max="50000" value="50000" step="50" oninput="updatePriceSlider('prod')">
+      </div>
+      <div class="price-range-display" id="prod-price-display">₹50 – ₹50,000</div>
+      <button class="price-reset-btn" onclick="resetPriceFilter('prod')">Reset</button>
     </div>
     <div class="products-grid" id="products-grid">
       <div class="loading-wrap"><div class="spinner"></div></div>
@@ -549,6 +677,9 @@ window.onload = () => {
   loadProducts().then(() => {
     renderGrid('home-grid', 'All', true);
     renderGrid('products-grid', 'All', false);
+    // Init slider visuals
+    updatePriceSlider('home');
+    updatePriceSlider('prod');
   });
   loadBanner();
   waitForGoogleAndInit();
@@ -645,6 +776,9 @@ function buildCatPills() {
     homePills.insertAdjacentHTML('beforeend',`<button class="cat-pill" onclick="filterCat('${c.name}',this)">${e} ${c.name}</button>`);
     prodPills.insertAdjacentHTML('beforeend',`<button class="cat-pill" onclick="filterCat2('${c.name}',this)">${c.name}</button>`);
   });
+  // Reset sort on category change
+  const sortEl = document.getElementById('sort-select');
+  if (sortEl) sortEl.value = '';
 }
 
 async function loadProducts() {
@@ -655,77 +789,124 @@ async function loadProducts() {
 const EMOJIS = {'Metal Trophy':'🏆','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'⭐','Gift':'🎁'};
 
 function buildCard(p, gridKey) {
-  const sizes   = Array.isArray(p.sizes) ? p.sizes : (JSON.parse(p.sizes || '[]'));
-  const top3    = sizes.slice(0, 3);
+  const sizes = Array.isArray(p.sizes) ? p.sizes : (JSON.parse(p.sizes || '[]'));
   const imgHtml = p.image_url
     ? `<img src="${CONFIG.API_URL}${p.image_url.startsWith('/') ? '' : '/'}${p.image_url}" alt="${p.name}" loading="lazy">`
     : `<div class="card-img-placeholder">${EMOJIS[p.category_name] || '🏆'}</div>`;
-  const sizeBadges = top3.map(s => `<div class="size-badge">${s.label || s}</div>`).join('');
-  const qtyRows = top3.map((s, i) => {
-    const key = s.key || String.fromCharCode(65 + i);
-    const lbl = s.label || s;
-    return `<div class="qty-row">
-      <div class="qty-size-tag">${key} – <span style="font-weight:400;font-size:0.7rem">${lbl}</span></div>
-      <div class="qty-controls">
-        <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',-1)">−</button>
-        <div class="qty-val" id="qv-${gridKey}-${p.id}-${key}">0</div>
-        <button class="qty-btn" onclick="changeQty('${gridKey}',${p.id},'${key}',1)">+</button>
-      </div></div>`;
-  }).join('');
+
+  // Build price range display
+  let priceDisplay = `₹${Number(p.price).toLocaleString('en-IN')}`;
+  if (sizes.length > 0 && sizes[0] && sizes[0].price) {
+    const prices = sizes.map(s => Number(s.price)).filter(n => n > 0);
+    if (prices.length) {
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      priceDisplay = minP !== maxP
+        ? `₹${minP.toLocaleString('en-IN')} – ₹${maxP.toLocaleString('en-IN')}`
+        : `₹${minP.toLocaleString('en-IN')}`;
+    }
+  }
+
   const card = document.createElement('div');
   card.className = 'product-card';
+  // Home grid → go to products page; Products grid → open modal
+  if (gridKey === 'hg') {
+    card.onclick = () => showPage('products');
+  } else {
+    card.onclick = () => openProductModal(p);
+  }
   card.innerHTML = `
     <div class="card-img-wrap">
       ${p.is_new ? '<div class="badge-new">New</div>' : ''}${imgHtml}
-      <div class="size-hover">
-        <div class="size-hover-title">Available Sizes</div>
-        <div class="size-badges">${sizeBadges || '<div class="size-badge">One Size</div>'}</div>
-      </div>
     </div>
     <div class="card-body">
       <div class="card-cat">${p.category_name || ''}</div>
       <div class="card-name">${p.name}</div>
-      <div class="card-price">₹${Number(p.price).toLocaleString('en-IN')}</div>
-      <div class="qty-section">
-        <div class="qty-label">Select Quantity</div>
-        <div class="qty-rows">${qtyRows}</div>
-        <button class="card-add-btn" onclick="addToCart(${p.id},'${gridKey}')">Add to Cart</button>
-      </div>
+      <div class="card-price">${priceDisplay}</div>
     </div>`;
   return card;
 }
+// ── Product Detail Modal ──────────────────────────────────
+let _modalProduct = null;
+const _modalQty   = {};
 
-const cardQty = {};
-function getCardQty(k, pid, sz) { return cardQty[`${k}_${pid}_${sz}`] || 0; }
-function setCardQty(k, pid, sz, v) { cardQty[`${k}_${pid}_${sz}`] = Math.max(0, v); }
-function changeQty(gridKey, pid, sz, delta) {
-  const nv = Math.max(0, getCardQty(gridKey, pid, sz) + delta);
-  setCardQty(gridKey, pid, sz, nv);
-  const el = document.getElementById(`qv-${gridKey}-${pid}-${sz}`);
-  if (el) el.textContent = nv;
-}
+function openProductModal(product) {
+  _modalProduct = product;
+  const sizes = Array.isArray(product.sizes) ? product.sizes : JSON.parse(product.sizes || '[]');
+  sizes.forEach((s, i) => { _modalQty[s.key || String.fromCharCode(65+i)] = 0; });
 
-function addToCart(pid, gridKey) {
-  const p = allProducts.find(x => x.id === pid);
-  if (!p) return;
-  const top3 = (Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes || '[]')).slice(0, 3);
-  let added = 0;
-  top3.forEach((s, i) => {
-    const key = s.key || String.fromCharCode(65 + i);
-    const lbl = s.label || s;
-    const qty = getCardQty(gridKey, pid, key);
-    if (qty < 1) return;
-    const existing = cart.find(c => c.product_id === pid && c.size_key === key);
-    if (existing) { existing.quantity += qty; }
-    else { cart.push({ product_id:pid, product_name:p.name, category:p.category_name, image_url:p.image_url, size_key:key, size_label:lbl, price:Number(p.price), quantity:qty }); }
-    setCardQty(gridKey, pid, key, 0);
-    const el = document.getElementById(`qv-${gridKey}-${pid}-${key}`);
-    if (el) el.textContent = '0';
-    added += qty;
+  document.getElementById('pm-title').textContent = product.name;
+  document.getElementById('pm-cat').textContent   = product.category_name || '';
+  document.getElementById('pm-name').textContent  = product.name;
+  document.getElementById('pm-desc').textContent  = product.description || 'Premium quality trophy/award. Customization available.';
+
+  const imgEl = document.getElementById('pm-img');
+  imgEl.innerHTML = product.image_url
+    ? `<img src="${CONFIG.API_URL}${product.image_url.startsWith('/') ? '' : '/'}${product.image_url}" alt="${product.name}">`
+    : `<div class="pm-placeholder">${EMOJIS[product.category_name] || '🏆'}</div>`;
+
+  const sizesEl = document.getElementById('pm-sizes');
+  sizesEl.innerHTML = '';
+  sizes.forEach((size, idx) => {
+    const key   = size.key   || String.fromCharCode(65+idx);
+    const label = size.label || size;
+    const price = size.price || product.price;
+    const row   = document.createElement('div');
+    row.className = 'pm-size-row';
+    row.id = `pmrow-${key}`;
+    row.innerHTML = `
+      <div class="pm-size-info">
+        <div class="pm-size-label">${label}</div>
+        <div class="pm-size-price">₹${Number(price).toLocaleString('en-IN')}</div>
+      </div>
+      <div class="pm-qty-wrap">
+        <button class="pm-qty-btn" onclick="pmChangeQty('${key}',-1)">−</button>
+        <div class="pm-qty-val" id="pmqv-${key}">0</div>
+        <button class="pm-qty-btn" onclick="pmChangeQty('${key}',1)">+</button>
+      </div>`;
+    sizesEl.appendChild(row);
   });
-  if (added === 0) { alert('Please select at least one quantity!'); return; }
-  saveCart(); updateCartCount(); showToast(`Added ${added} item(s) to cart! 🛒`);
+
+  document.getElementById('product-modal').classList.add('open');
 }
+
+function closeProductModal() {
+  document.getElementById('product-modal').classList.remove('open');
+  _modalProduct = null;
+}
+
+function pmChangeQty(key, delta) {
+  _modalQty[key] = Math.max(0, (_modalQty[key] || 0) + delta);
+  const valEl = document.getElementById(`pmqv-${key}`);
+  if (valEl) valEl.textContent = _modalQty[key];
+  const rowEl = document.getElementById(`pmrow-${key}`);
+  if (rowEl) rowEl.classList.toggle('has-qty', _modalQty[key] > 0);
+}
+
+function addFromModal() {
+  if (!_modalProduct) return;
+  const sizes = Array.isArray(_modalProduct.sizes) ? _modalProduct.sizes : JSON.parse(_modalProduct.sizes || '[]');
+  let totalAdded = 0;
+  sizes.forEach((size, idx) => {
+    const key   = size.key   || String.fromCharCode(65+idx);
+    const label = size.label || size;
+    const price = Number(size.price) || Number(_modalProduct.price);
+    const qty   = _modalQty[key] || 0;
+    if (qty < 1) return;
+    const existing = cart.find(c => c.product_id === _modalProduct.id && c.size_key === key);
+    if (existing) { existing.quantity += qty; }
+    else { cart.push({ product_id:_modalProduct.id, product_name:_modalProduct.name, category:_modalProduct.category_name, image_url:_modalProduct.image_url, size_key:key, size_label:label, price, quantity:qty }); }
+    totalAdded += qty;
+  });
+  if (totalAdded === 0) { alert('Please select at least one quantity!'); return; }
+  saveCart(); updateCartCount(); closeProductModal();
+  showToast(`Added ${totalAdded} item(s) to cart! 🛒`);
+}
+
+// Close modal on outside click
+document.addEventListener('click', e => {
+  if (e.target === document.getElementById('product-modal')) closeProductModal();
+});
 
 function removeFromCart(idx) { cart.splice(idx, 1); saveCart(); updateCartCount(); renderCartPanel(); }
 function saveCart() { localStorage.setItem('tc_cart', JSON.stringify(cart)); }
@@ -850,24 +1031,115 @@ function renderGrid(gridId, cat, featured) {
   if (!el) return;
   el.innerHTML = '';
   let list = cat === 'All' ? allProducts : allProducts.filter(p => p.category_name === cat);
-  if (featured) list = list.slice(0, 6);
+  // Show all products on home too (no limit)
   if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products found</p></div>'; return; }
   const gk = gridId === 'home-grid' ? 'hg' : 'pg';
   list.forEach(p => el.appendChild(buildCard(p, gk)));
 }
 
+// ── Price Slider Logic ──────────────────────────────────
+function updatePriceSlider(prefix) {
+  const minEl = document.getElementById(`${prefix}-price-min`);
+  const maxEl = document.getElementById(`${prefix}-price-max`);
+  const rangeEl = document.getElementById(`${prefix}-slider-range`);
+  const displayEl = document.getElementById(`${prefix}-price-display`);
+  const wrapEl = document.getElementById(`${prefix}-slider-wrap`);
+
+  let minVal = Number(minEl.value);
+  let maxVal = Number(maxEl.value);
+
+  // Prevent handles crossing
+  if (minVal > maxVal - 50) {
+    if (document.activeElement === minEl) minVal = maxVal - 50;
+    else maxVal = minVal + 50;
+    minEl.value = minVal;
+    maxEl.value = maxVal;
+  }
+
+  const pct = (v) => ((v - 50) / (50000 - 50)) * 100;
+  rangeEl.style.left  = pct(minVal) + '%';
+  rangeEl.style.width = (pct(maxVal) - pct(minVal)) + '%';
+  displayEl.textContent = `₹${minVal.toLocaleString('en-IN')} – ₹${maxVal.toLocaleString('en-IN')}`;
+
+  if (prefix === 'home') applyHomeFilters();
+  else applyProductsFilters();
+}
+
+function resetPriceFilter(prefix) {
+  document.getElementById(`${prefix}-price-min`).value = 50;
+  document.getElementById(`${prefix}-price-max`).value = 50000;
+  updatePriceSlider(prefix);
+}
+
+function getPriceRange(prefix) {
+  return {
+    min: Number(document.getElementById(`${prefix}-price-min`).value),
+    max: Number(document.getElementById(`${prefix}-price-max`).value)
+  };
+}
+
+function filterByPrice(products, min, max) {
+  return products.filter(p => {
+    const sizes = Array.isArray(p.sizes) ? p.sizes : JSON.parse(p.sizes || '[]');
+    if (sizes.length && sizes[0] && sizes[0].price) {
+      // Check if ANY size falls in the range
+      return sizes.some(s => Number(s.price) >= min && Number(s.price) <= max);
+    }
+    return Number(p.price) >= min && Number(p.price) <= max;
+  });
+}
+
+function applyHomeFilters() {
+  const sortValue = document.getElementById('home-sort-select').value;
+  const { min, max } = getPriceRange('home');
+  const cat = currentCat;
+
+  let list = cat === 'All' ? [...allProducts] : allProducts.filter(p => p.category_name === cat);
+  list = filterByPrice(list, min, max);
+
+  if (sortValue === 'price_low')  list.sort((a,b) => Number(a.price) - Number(b.price));
+  else if (sortValue === 'price_high') list.sort((a,b) => Number(b.price) - Number(a.price));
+  else if (sortValue === 'newest') list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const grid = document.getElementById('home-grid');
+  grid.innerHTML = '';
+  if (!list.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products in this range</p></div>'; return; }
+  list.forEach(p => grid.appendChild(buildCard(p, 'hg')));
+}
+
+function applyProductsFilters() {
+  const sortValue = document.getElementById('sort-select').value;
+  const { min, max } = getPriceRange('prod');
+  const cat = currentCat2;
+
+  let list = cat === 'All' ? [...allProducts] : allProducts.filter(p => p.category_name === cat);
+  list = filterByPrice(list, min, max);
+
+  if (sortValue === 'price_low')  list.sort((a,b) => Number(a.price) - Number(b.price));
+  else if (sortValue === 'price_high') list.sort((a,b) => Number(b.price) - Number(a.price));
+  else if (sortValue === 'newest') list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML = '';
+  if (!list.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products in this range</p></div>'; return; }
+  list.forEach(p => grid.appendChild(buildCard(p, 'pg')));
+}
+
+// Keep old handleSort as alias
+function handleSort() { applyProductsFilters(); }
+
 function filterCat(cat, btn) {
   currentCat = cat;
   document.querySelectorAll('#home-cat-pills .cat-pill').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  renderGrid('home-grid', cat, true);
+  applyHomeFilters();
 }
 
 function filterCat2(cat, btn) {
   currentCat2 = cat;
   document.querySelectorAll('#products-cat-pills .cat-pill').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  renderGrid('products-grid', cat, false);
+  applyProductsFilters();
 }
 
 function handleSearch(val) {
@@ -999,5 +1271,24 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2800);
 }
 </script>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="product-modal-bg" id="product-modal">
+  <div class="product-modal">
+    <div class="product-modal-header">
+      <h2 id="pm-title">Product Details</h2>
+      <button class="product-modal-close" onclick="closeProductModal()">✕</button>
+    </div>
+    <div class="product-modal-body">
+      <div class="product-modal-img" id="pm-img"></div>
+      <div class="pm-cat" id="pm-cat"></div>
+      <div class="pm-name" id="pm-name"></div>
+      <div class="pm-desc" id="pm-desc"></div>
+      <div class="pm-sizes-title">Select Size &amp; Quantity</div>
+      <div class="pm-sizes" id="pm-sizes"></div>
+      <button class="pm-add-btn" onclick="addFromModal()">Add to Cart 🛒</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

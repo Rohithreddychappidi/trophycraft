@@ -2,9 +2,9 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
 
-// GET /api/products?cat=Metal+Trophy&search=gold
+// GET /api/products?cat=Metal+Trophy&search=gold&sort=price_low
 router.get('/', async (req, res) => {
-  const { cat, search } = req.query;
+  const { cat, search, sort } = req.query;
   const params = [];
   let   where  = ['p.is_active = true'];
 
@@ -17,12 +17,16 @@ router.get('/', async (req, res) => {
     where.push(`(LOWER(p.name) LIKE $${params.length} OR LOWER(c.name) LIKE $${params.length})`);
   }
 
+  let orderBy = 'p.is_new DESC, p.created_at DESC';
+  if (sort === 'price_low')  orderBy = 'p.price ASC';
+  if (sort === 'price_high') orderBy = 'p.price DESC';
+
   const sql = `
     SELECT p.*, c.name AS category_name, c.slug AS category_slug
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE ${where.join(' AND ')}
-    ORDER BY p.is_new DESC, p.created_at DESC
+    ORDER BY ${orderBy}
   `;
 
   const result = await db.query(sql, params);

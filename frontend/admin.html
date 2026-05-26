@@ -115,8 +115,12 @@ tr:hover td{background:var(--gray-50)}
 .size-editor{border:1px solid var(--gray-200);border-radius:7px;padding:14px;margin-top:6px}
 .size-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
 .size-row input{flex:1;border:1px solid var(--gray-200);border-radius:5px;padding:6px 10px;font-size:0.82rem;outline:none}
+.size-row input.size-price-input{max-width:110px;flex:0 0 110px}
 .size-row input:focus{border-color:var(--blue)}
 .size-row .rm-size{background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1rem;padding:2px 4px}
+.size-row-hdr{display:flex;gap:8px;margin-bottom:4px;align-items:center;font-size:0.7rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px}
+.size-row-hdr span:first-child{max-width:70px;width:70px}
+.size-row-hdr span:nth-child(3){max-width:110px;width:110px}
 .add-size-btn{background:none;border:1.5px dashed var(--blue);color:var(--blue);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;width:100%;margin-top:4px}
 .add-size-btn:hover{background:var(--blue-light)}
 
@@ -382,10 +386,7 @@ tr:hover td{background:var(--gray-50)}
           <label>Category *</label>
           <select id="pm-cat"></select>
         </div>
-        <div class="form-group">
-          <label>Price (₹) *</label>
-          <input type="number" id="pm-price" placeholder="e.g. 1299" min="1">
-        </div>
+        <!-- Price is auto-calculated from sizes below -->
         <div class="form-group" style="grid-column:1/-1">
           <label>Description</label>
           <textarea id="pm-desc" placeholder="Product description…"></textarea>
@@ -396,7 +397,8 @@ tr:hover td{background:var(--gray-50)}
           <img id="pm-img-preview" class="img-preview" alt="preview">
         </div>
         <div class="form-group" style="grid-column:1/-1">
-          <label>Sizes (max 3 shown on hover)</label>
+          <label>Sizes &amp; Prices * <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(price per size — min price auto-set for display)</span></label>
+          <div class="size-row-hdr"><span>Key</span><span style="flex:1">Label</span><span>Price (₹)</span><span style="width:28px"></span></div>
           <div class="size-editor" id="size-editor"></div>
           <button class="add-size-btn" onclick="addSizeRow()">+ Add Size</button>
         </div>
@@ -720,14 +722,13 @@ async function openProductModal(productId) {
   document.getElementById('product-modal-title').textContent = productId ? 'Edit Product' : 'Add Product';
   document.getElementById('pm-id').value    = productId || '';
   document.getElementById('pm-name').value  = '';
-  document.getElementById('pm-price').value = '';
   document.getElementById('pm-desc').value  = '';
   document.getElementById('pm-isnew').checked  = false;
   document.getElementById('pm-active').checked = true;
   document.getElementById('pm-img').value   = '';
   document.getElementById('pm-img-preview').style.display = 'none';
 
- const catSel = document.getElementById('pm-cat');
+  const catSel = document.getElementById('pm-cat');
   if (!allCategories.length) {
     try { allCategories = await apiGet('/api/admin/categories'); } catch(e) {}
   }
@@ -741,7 +742,6 @@ async function openProductModal(productId) {
       const p = list.find(x => x.id === productId);
       if (!p) return;
       document.getElementById('pm-name').value     = p.name;
-      document.getElementById('pm-price').value    = p.price;
       document.getElementById('pm-desc').value     = p.description || '';
       document.getElementById('pm-isnew').checked  = p.is_new;
       document.getElementById('pm-active').checked = p.is_active;
@@ -762,19 +762,20 @@ function initSizeEditor(sizes) {
   const ed = document.getElementById('size-editor');
   ed.innerHTML = '';
   if (sizes.length) {
-    sizes.forEach(s => addSizeRow(s.key || '', s.label || s));
+    sizes.forEach(s => addSizeRow(s.key || '', s.label || (typeof s === 'string' ? s : ''), s.price || ''));
   } else {
-    ['A','B','C'].forEach(k => addSizeRow(k, ''));
+    ['A','B','C'].forEach(k => addSizeRow(k, '', ''));
   }
 }
 
-function addSizeRow(key = '', label = '') {
+function addSizeRow(key = '', label = '', price = '') {
   const ed  = document.getElementById('size-editor');
   const row = document.createElement('div');
   row.className = 'size-row';
   row.innerHTML = `
-    <input type="text" placeholder="Key (e.g. A)" value="${escHtml(key)}" maxlength="5" style="max-width:70px">
+    <input type="text" placeholder="A" value="${escHtml(key)}" maxlength="5" style="max-width:70px;flex:0 0 70px">
     <input type="text" placeholder="Label (e.g. 6 inch)" value="${escHtml(label)}">
+    <input type="number" placeholder="Price ₹" value="${escHtml(String(price))}" min="0" class="size-price-input">
     <button class="rm-size" onclick="this.parentElement.remove()" title="Remove">✕</button>`;
   ed.appendChild(row);
 }
@@ -789,22 +790,28 @@ function previewImg(input) {
 
 async function saveProduct() {
   const name  = document.getElementById('pm-name').value.trim();
-  const price = document.getElementById('pm-price').value;
   const catId = document.getElementById('pm-cat').value;
-  if (!name || !price || !catId) { showToast('Name, price and category are required','error'); return; }
+  if (!name || !catId) { showToast('Name and category are required','error'); return; }
 
-  // Collect sizes
+  // Collect sizes with price
   const rows  = document.getElementById('size-editor').querySelectorAll('.size-row');
   const sizes = [];
   rows.forEach(row => {
-    const [keyIn, labelIn] = row.querySelectorAll('input');
-    if (labelIn.value.trim()) sizes.push({ key: keyIn.value.trim() || ('S' + (sizes.length+1)), label: labelIn.value.trim() });
+    const inputs = row.querySelectorAll('input');
+    const keyIn   = inputs[0];
+    const labelIn = inputs[1];
+    const priceIn = inputs[2];
+    const label = labelIn.value.trim();
+    const price = Number(priceIn.value);
+    if (label && price > 0) {
+      sizes.push({ key: keyIn.value.trim() || ('S' + (sizes.length+1)), label, price });
+    }
   });
+  if (!sizes.length) { showToast('Add at least one size with a price','error'); return; }
 
   const fd = new FormData();
   fd.append('name',        name);
   fd.append('category_id', catId);
-  fd.append('price',       price);
   fd.append('description', document.getElementById('pm-desc').value.trim());
   fd.append('sizes',       JSON.stringify(sizes));
   fd.append('is_new',      document.getElementById('pm-isnew').checked);

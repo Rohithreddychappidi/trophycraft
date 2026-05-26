@@ -66,16 +66,21 @@ router.get('/products', async (req, res) => {
 });
 
 router.post('/products', upload.single('image'), async (req, res) => {
-  const { name, category_id, price, description, sizes, is_new } = req.body;
+  const { name, category_id, description, sizes, is_new } = req.body;
   const image_url = req.file
     ? `/uploads/${req.file.filename}`
     : null;
   const sizesArr = parseJSON(sizes, []);
 
+  // Auto-calculate minimum price from sizes
+  const minPrice = sizesArr.length > 0
+    ? Math.min(...sizesArr.map(s => Number(s.price) || 0))
+    : 0;
+
   const r = await db.query(
     `INSERT INTO products (name, category_id, price, description, image_url, sizes, is_new)
      VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-    [name, category_id, price, description, image_url, JSON.stringify(sizesArr), is_new === 'true']
+    [name, category_id, minPrice, description, image_url, JSON.stringify(sizesArr), is_new === 'true']
   );
   res.status(201).json(r.rows[0]);
 });
@@ -85,11 +90,16 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
   if (!ex.rows.length) return res.status(404).json({ error: 'Product not found' });
   const e = ex.rows[0];
 
-  const { name, category_id, price, description, sizes, is_new, is_active } = req.body;
+  const { name, category_id, description, sizes, is_new, is_active } = req.body;
   const image_url = req.file
     ? `/uploads/${req.file.filename}`
     : e.image_url;
   const sizesArr = sizes ? parseJSON(sizes, e.sizes) : e.sizes;
+
+  // Auto-calculate minimum price from sizes
+  const minPrice = sizesArr.length > 0
+    ? Math.min(...sizesArr.map(s => Number(s.price) || 0))
+    : e.price;
 
   const r = await db.query(
     `UPDATE products
@@ -99,7 +109,7 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
     [
       name        ?? e.name,
       category_id ?? e.category_id,
-      price       ?? e.price,
+      minPrice,
       description !== undefined ? description : e.description,
       image_url,
       JSON.stringify(sizesArr),
