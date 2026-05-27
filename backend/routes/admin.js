@@ -148,18 +148,33 @@ router.get('/banners', async (req, res) => {
   res.json(r.rows);
 });
 
-router.put('/banners/:id', async (req, res) => {
+router.put('/banners/:id', upload.single('image'), async (req, res) => {
+  const ex = await db.query('SELECT * FROM banners WHERE id=$1', [req.params.id]);
+  if (!ex.rows.length) return res.status(404).json({ error: 'Banner not found' });
+  const e = ex.rows[0];
+
   const { title, subtitle, btn_primary_text, btn_secondary_text, is_active } = req.body;
+  const image_url = req.file
+    ? `/uploads/${req.file.filename}`
+    : e.image_url;
+
   const r = await db.query(
     `UPDATE banners
-     SET title=$1, subtitle=$2, btn_primary_text=$3, btn_secondary_text=$4, is_active=$5
-     WHERE id=$6 RETURNING *`,
-    [title, subtitle, btn_primary_text, btn_secondary_text, is_active !== false, req.params.id]
+     SET title=$1, subtitle=$2, btn_primary_text=$3, btn_secondary_text=$4,
+         is_active=$5, image_url=$6
+     WHERE id=$7 RETURNING *`,
+    [
+      title              ?? e.title,
+      subtitle           ?? e.subtitle,
+      btn_primary_text   ?? e.btn_primary_text,
+      btn_secondary_text ?? e.btn_secondary_text,
+      is_active !== false,
+      image_url,
+      req.params.id,
+    ]
   );
-  if (!r.rows.length) return res.status(404).json({ error: 'Banner not found' });
   res.json(r.rows[0]);
 });
-
 /* ─── COUPONS ───────────────────────────────────────────── */
 router.get('/coupons', async (req, res) => {
   const r = await db.query('SELECT * FROM coupons ORDER BY created_at DESC');

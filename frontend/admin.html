@@ -494,6 +494,13 @@ tr:hover td{background:var(--gray-50)}
         <div class="form-group"><label>Primary Button Text</label><input type="text" id="bm-btn1"></div>
         <div class="form-group"><label>Secondary Button Text</label><input type="text" id="bm-btn2"></div>
       </div>
+      <!-- NEW: Banner Image Upload -->
+      <div class="form-group">
+        <label>Banner Background Image</label>
+        <input type="file" id="bm-img" accept="image/*" onchange="previewBannerImg(this)">
+        <img id="bm-img-preview" class="img-preview" alt="preview" style="width:100%;height:120px;object-fit:cover;margin-top:8px;display:none;border-radius:8px">
+        <div style="font-size:0.75rem;color:var(--gray-400);margin-top:4px">Recommended: 1400×500px or wider. Leave empty to keep current image.</div>
+      </div>
       <div class="form-footer">
         <button class="btn btn-outline" onclick="closeModal('banner-modal')">Cancel</button>
         <button class="btn btn-primary" onclick="saveBanner()">Save Banner</button>
@@ -787,6 +794,13 @@ function previewImg(input) {
     prev.style.display = 'block';
   }
 }
+function previewBannerImg(input) {
+  const prev = document.getElementById('bm-img-preview');
+  if (input.files[0]) {
+    prev.src = URL.createObjectURL(input.files[0]);
+    prev.style.display = 'block';
+  }
+}
 
 async function saveProduct() {
   const name  = document.getElementById('pm-name').value.trim();
@@ -1039,23 +1053,33 @@ function openBannerModal(id) {
     document.getElementById('bm-subtitle').value = b.subtitle;
     document.getElementById('bm-btn1').value     = b.btn_primary_text;
     document.getElementById('bm-btn2').value     = b.btn_secondary_text;
+    document.getElementById('bm-img').value      = '';
+    const prev = document.getElementById('bm-img-preview');
+    if (b.image_url) {
+      prev.src = CONFIG.API_URL + (b.image_url.startsWith('/') ? '' : '/') + b.image_url;
+      prev.style.display = 'block';
+    } else {
+      prev.style.display = 'none';
+    }
     openModal('banner-modal');
   });
 }
 
 async function saveBanner() {
   const id = document.getElementById('bm-id').value;
+  const fd = new FormData();
+  fd.append('title',               document.getElementById('bm-title').value.trim());
+  fd.append('subtitle',            document.getElementById('bm-subtitle').value.trim());
+  fd.append('btn_primary_text',    document.getElementById('bm-btn1').value.trim());
+  fd.append('btn_secondary_text',  document.getElementById('bm-btn2').value.trim());
+  const imgFile = document.getElementById('bm-img').files[0];
+  if (imgFile) fd.append('image', imgFile);
   try {
-    await apiPut(`/api/admin/banners/${id}`, {
-      title:             document.getElementById('bm-title').value.trim(),
-      subtitle:          document.getElementById('bm-subtitle').value.trim(),
-      btn_primary_text:  document.getElementById('bm-btn1').value.trim(),
-      btn_secondary_text:document.getElementById('bm-btn2').value.trim(),
-    });
-    showToast('Banner updated!','success');
+    await apiFetch(`/api/admin/banners/${id}`, { method: 'PUT', body: fd });
+    showToast('Banner updated!', 'success');
     closeModal('banner-modal');
     loadBanners();
-  } catch (e) { showToast(e.message,'error'); }
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
 /* ══════════════════════════════════════════════════════════
