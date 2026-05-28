@@ -113,3 +113,25 @@ INSERT INTO products (name, category_id, price, description, is_new, sizes) VALU
   ('Rosewood Shield',        3, 849, 'Rosewood veneer shield plaque with brass plate engraving, elegance personified.', false,
    '[{"key":"A","label":"8x6 in"},{"key":"B","label":"10x8 in"},{"key":"C","label":"12x10 in"}]')
 ON CONFLICT DO NOTHING;
+-- Contact Messages table
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id           SERIAL PRIMARY KEY,
+  name         VARCHAR(200) NOT NULL,
+  email        VARCHAR(200) NOT NULL,
+  phone        VARCHAR(50),
+  enquiry_type VARCHAR(100) DEFAULT 'General Enquiry',
+  message      TEXT NOT NULL,
+  is_read      BOOLEAN DEFAULT false,
+  created_at   TIMESTAMP DEFAULT NOW()
+);
+UPDATE products
+SET sizes = '[{"key":"A","label":"6 inch","price":999},{"key":"B","label":"9 inch","price":1299},{"key":"C","label":"12 inch","price":1599}]'
+WHERE id = 1;
+
+INSERT INTO categories (name, slug) VALUES
+  ('Cricket',  'cricket'),
+  ('Football', 'football'),
+  ('Others',   'others')
+ON CONFLICT DO NOTHING;
+
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS image_url VARCHAR(500);
