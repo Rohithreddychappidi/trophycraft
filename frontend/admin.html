@@ -386,6 +386,10 @@ tr:hover td{background:var(--gray-50)}
           <label>Category *</label>
           <select id="pm-cat"></select>
         </div>
+        <div class="form-group">
+          <label>Discount % <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(0 = no discount)</span></label>
+          <input type="number" id="pm-discount" placeholder="e.g. 10" min="0" max="90" step="1" value="0">
+        </div>
         <!-- Price is auto-calculated from sizes below -->
         <div class="form-group" style="grid-column:1/-1">
           <label>Description</label>
@@ -710,7 +714,7 @@ async function loadProducts() {
           </td>
           <td><strong>${p.name}</strong>${p.is_new?'<span class="badge new" style="margin-left:6px">New</span>':''}</td>
           <td>${p.category_name || '—'}</td>
-          <td>₹${Number(p.price).toLocaleString('en-IN')}</td>
+          <td>₹${Number(p.price).toLocaleString('en-IN')}${Number(p.discount_percent) > 0 ? `<span class="badge" style="background:#fef2f2;color:#dc2626;margin-left:6px;font-size:0.68rem">${p.discount_percent}% OFF</span>` : ''}</td>
           <td style="font-size:0.78rem;color:var(--gray-600)">${sizes.map(s=>s.label||s).join(', ')||'—'}</td>
           <td><span class="badge ${p.is_active?'active':'inactive'}">${p.is_active?'Active':'Inactive'}</span></td>
           <td>
@@ -734,6 +738,7 @@ async function openProductModal(productId) {
   document.getElementById('pm-active').checked = true;
   document.getElementById('pm-img').value   = '';
   document.getElementById('pm-img-preview').style.display = 'none';
+  document.getElementById('pm-discount').value = 0;
 
   const catSel = document.getElementById('pm-cat');
   if (!allCategories.length) {
@@ -758,6 +763,7 @@ async function openProductModal(productId) {
         prev.src = CONFIG.API_URL + (p.image_url.startsWith('/')?'':'/') + p.image_url;
         prev.style.display = 'block';
       }
+      document.getElementById('pm-discount').value = p.discount_percent || 0;
       const sizes = Array.isArray(p.sizes) ? p.sizes : tryParse(p.sizes,[]);
       initSizeEditor(sizes);
     });
@@ -830,6 +836,7 @@ async function saveProduct() {
   fd.append('sizes',       JSON.stringify(sizes));
   fd.append('is_new',      document.getElementById('pm-isnew').checked);
   fd.append('is_active',   document.getElementById('pm-active').checked);
+  fd.append('discount_percent', document.getElementById('pm-discount').value || 0);
   const imgFile = document.getElementById('pm-img').files[0];
   if (imgFile) fd.append('image', imgFile);
 

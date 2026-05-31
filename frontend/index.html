@@ -410,6 +410,33 @@
 .user-avatar{width:26px;height:26px}
 #user-name{display:none}
 }
+.card-discount-badge{
+  display:inline-block;background:#fef2f2;color:#dc2626;
+  font-size:0.65rem;font-weight:700;padding:2px 7px;
+  border-radius:20px;margin-left:6px;vertical-align:middle
+}
+.card-price-original{
+  font-size:0.78rem;color:var(--gray-400);
+  text-decoration:line-through;margin-right:4px
+}
+.card-price-final{font-size:1.05rem;font-weight:700;color:#dc2626}
+.pm-original-price{
+  font-size:0.85rem;color:var(--gray-400);
+  text-decoration:line-through;margin-right:6px
+}
+.pm-discount-tag{
+  display:inline-block;background:#fef2f2;color:#dc2626;
+  font-size:0.72rem;font-weight:700;padding:2px 8px;
+  border-radius:20px;margin-left:4px
+}
+.cart-item-discount{
+  font-size:0.72rem;color:#dc2626;font-weight:600;margin-top:1px
+}
+.cart-savings{
+  background:#fef2f2;color:#dc2626;font-size:0.78rem;
+  font-weight:700;padding:6px 12px;border-radius:6px;
+  margin-bottom:10px;text-align:center
+}
 </style>
 </head>
 <body>
@@ -881,17 +908,28 @@ function buildCard(p, gridKey) {
     : `<div class="card-img-placeholder">${EMOJIS[p.category_name] || '🏆'}</div>`;
 
   // Build price range display
-  let priceDisplay = `₹${Number(p.price).toLocaleString('en-IN')}`;
-  if (sizes.length > 0 && sizes[0] && sizes[0].price) {
-    const prices = sizes.map(s => Number(s.price)).filter(n => n > 0);
-    if (prices.length) {
-      const minP = Math.min(...prices);
-      const maxP = Math.max(...prices);
-      priceDisplay = minP !== maxP
-        ? `₹${minP.toLocaleString('en-IN')} – ₹${maxP.toLocaleString('en-IN')}`
-        : `₹${minP.toLocaleString('en-IN')}`;
+  // Build price range display with discount
+let priceDisplay = '';
+if (sizes.length > 0 && sizes[0] && sizes[0].price) {
+  const prices = sizes.map(s => Number(s.price)).filter(n => n > 0);
+  if (prices.length) {
+    const minP = Math.min(...prices);
+    const maxP = Math.max(...prices);
+    const disc = Number(p.discount_percent) || 0;
+    if (disc > 0) {
+      const minFinal = Math.round(minP * (1 - disc/100));
+      const maxFinal = Math.round(maxP * (1 - disc/100));
+      priceDisplay = `
+        <span class="card-price-original">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>
+        <span class="card-price-final">₹${minFinal.toLocaleString('en-IN')}${minFinal !== maxFinal ? ' – ₹'+maxFinal.toLocaleString('en-IN') : ''}</span>
+        <span class="card-discount-badge">${disc}% OFF</span>`;
+    } else {
+      priceDisplay = `<span style="font-size:1.05rem;font-weight:700;color:var(--blue)">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>`;
     }
   }
+} else {
+  priceDisplay = `<span style="font-size:1.05rem;font-weight:700;color:var(--blue)">₹${Number(p.price).toLocaleString('en-IN')}</span>`;
+}
 
   const card = document.createElement('div');
   card.className = 'product-card';
@@ -934,24 +972,30 @@ function openProductModal(product) {
   const sizesEl = document.getElementById('pm-sizes');
   sizesEl.innerHTML = '';
   sizes.forEach((size, idx) => {
-    const key   = size.key   || String.fromCharCode(65+idx);
-    const label = size.label || size;
-    const price = size.price || product.price;
-    const row   = document.createElement('div');
-    row.className = 'pm-size-row';
-    row.id = `pmrow-${key}`;
-    row.innerHTML = `
-      <div class="pm-size-info">
-        <div class="pm-size-label">${label}</div>
-        <div class="pm-size-price">₹${Number(price).toLocaleString('en-IN')}</div>
+  const key   = size.key   || String.fromCharCode(65+idx);
+  const label = size.label || size;
+  const price = Number(size.price) || Number(product.price);
+  const disc  = Number(product.discount_percent) || 0;
+  const finalPrice = disc > 0 ? Math.round(price * (1 - disc/100)) : price;
+  const row   = document.createElement('div');
+  row.className = 'pm-size-row';
+  row.id = `pmrow-${key}`;
+  row.innerHTML = `
+    <div class="pm-size-info">
+      <div class="pm-size-label">${label}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        ${disc > 0 ? `<span class="pm-original-price">₹${price.toLocaleString('en-IN')}</span>` : ''}
+        <span class="pm-size-price" style="${disc > 0 ? 'color:#dc2626' : ''}">₹${finalPrice.toLocaleString('en-IN')}</span>
+        ${disc > 0 ? `<span class="pm-discount-tag">${disc}% OFF</span>` : ''}
       </div>
-      <div class="pm-qty-wrap">
-        <button class="pm-qty-btn" onclick="pmChangeQty('${key}',-1)">−</button>
-        <div class="pm-qty-val" id="pmqv-${key}">0</div>
-        <button class="pm-qty-btn" onclick="pmChangeQty('${key}',1)">+</button>
-      </div>`;
-    sizesEl.appendChild(row);
-  });
+    </div>
+    <div class="pm-qty-wrap">
+      <button class="pm-qty-btn" onclick="pmChangeQty('${key}',-1)">−</button>
+      <div class="pm-qty-val" id="pmqv-${key}">0</div>
+      <button class="pm-qty-btn" onclick="pmChangeQty('${key}',1)">+</button>
+    </div>`;
+  sizesEl.appendChild(row);
+});
 
   document.getElementById('product-modal').classList.add('open');
 }
@@ -974,16 +1018,28 @@ function addFromModal() {
   const sizes = Array.isArray(_modalProduct.sizes) ? _modalProduct.sizes : JSON.parse(_modalProduct.sizes || '[]');
   let totalAdded = 0;
   sizes.forEach((size, idx) => {
-    const key   = size.key   || String.fromCharCode(65+idx);
-    const label = size.label || size;
-    const price = Number(size.price) || Number(_modalProduct.price);
-    const qty   = _modalQty[key] || 0;
-    if (qty < 1) return;
-    const existing = cart.find(c => c.product_id === _modalProduct.id && c.size_key === key);
-    if (existing) { existing.quantity += qty; }
-    else { cart.push({ product_id:_modalProduct.id, product_name:_modalProduct.name, category:_modalProduct.category_name, image_url:_modalProduct.image_url, size_key:key, size_label:label, price, quantity:qty }); }
-    totalAdded += qty;
-  });
+  const key   = size.key   || String.fromCharCode(65+idx);
+  const label = size.label || size;
+  const originalPrice = Number(size.price) || Number(_modalProduct.price);
+  const disc  = Number(_modalProduct.discount_percent) || 0;
+  const price = disc > 0 ? Math.round(originalPrice * (1 - disc/100)) : originalPrice;
+  const qty   = _modalQty[key] || 0;
+  if (qty < 1) return;
+  const existing = cart.find(c => c.product_id === _modalProduct.id && c.size_key === key);
+  if (existing) { existing.quantity += qty; }
+  else { cart.push({
+    product_id: _modalProduct.id,
+    product_name: _modalProduct.name,
+    category: _modalProduct.category_name,
+    image_url: _modalProduct.image_url,
+    size_key: key, size_label: label,
+    price,
+    original_price: originalPrice,
+    discount_percent: disc,
+    quantity: qty
+  }); }
+  totalAdded += qty;
+});
   if (totalAdded === 0) { alert('Please select at least one quantity!'); return; }
   saveCart(); updateCartCount(); closeProductModal();
   renderCartPanel();
@@ -1006,24 +1062,52 @@ function closeCart() { document.getElementById('cart-overlay').classList.remove(
 function renderCartPanel() {
   const list = document.getElementById('cart-items-list');
   const footer = document.getElementById('cart-footer');
-  if (!cart.length) { list.innerHTML = '<div class="cart-empty"><div class="ci">🛒</div><p>Your cart is empty</p></div>'; footer.style.display = 'none'; return; }
-  list.innerHTML = ''; let subtotal = 0;
+  if (!cart.length) {
+    list.innerHTML = '<div class="cart-empty"><div class="ci">🛒</div><p>Your cart is empty</p></div>';
+    footer.style.display = 'none';
+    document.querySelector('.cart-savings')?.remove();
+    return;
+  }
+  list.innerHTML = '';
+  let subtotal = 0;
+  let savings = 0;  // ← ADD THIS HERE
+
   cart.forEach((item, idx) => {
     subtotal += item.price * item.quantity;
-    const imgHtml = item.image_url ? `<img src="${CONFIG.API_URL}${item.image_url.startsWith('/') ? '' : '/'}${item.image_url}" alt="">` : EMOJIS[item.category] || '🏆';
+    if (item.original_price && item.discount_percent > 0) {
+      savings += (item.original_price - item.price) * item.quantity;
+    }
+    const imgHtml = item.image_url
+      ? `<img src="${CONFIG.API_URL}${item.image_url.startsWith('/') ? '' : '/'}${item.image_url}" alt="">`
+      : EMOJIS[item.category] || '🏆';
     const div = document.createElement('div');
     div.className = 'cart-item';
     div.innerHTML = `<div class="cart-item-img">${imgHtml}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.product_name}</div>
         <div class="cart-item-meta">Size: ${item.size_label} · Qty: ${item.quantity}</div>
-        <div class="cart-item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</div>
+        ${item.discount_percent > 0 ? `<div class="cart-item-discount">🏷️ ${item.discount_percent}% off applied</div>` : ''}
+        <div class="cart-item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}
+          ${item.original_price && item.discount_percent > 0
+            ? `<span style="font-size:0.72rem;color:var(--gray-400);text-decoration:line-through;margin-left:4px">₹${(item.original_price * item.quantity).toLocaleString('en-IN')}</span>`
+            : ''}
+        </div>
       </div>
       <button class="cart-item-remove" onclick="removeFromCart(${idx})" title="Remove">🗑</button>`;
     list.appendChild(div);
   });
+
   document.getElementById('cart-subtotal-val').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
   footer.style.display = '';
+
+  // ← SAVINGS BLOCK GOES HERE, after subtotal, before end of function
+  document.querySelector('.cart-savings')?.remove();
+  if (savings > 0) {
+    const savingsEl = document.createElement('div');
+    savingsEl.className = 'cart-savings';
+    savingsEl.textContent = `🎉 You save ₹${savings.toLocaleString('en-IN')} on this order!`;
+    document.getElementById('cart-footer').insertBefore(savingsEl, document.querySelector('.btn-checkout'));
+  }
 }
 
 function openCheckout() {

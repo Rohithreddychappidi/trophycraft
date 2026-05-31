@@ -66,21 +66,19 @@ router.get('/products', async (req, res) => {
 });
 
 router.post('/products', upload.single('image'), async (req, res) => {
-  const { name, category_id, description, sizes, is_new } = req.body;
-  const image_url = req.file
-    ? `/uploads/${req.file.filename}`
-    : null;
+  const { name, category_id, description, sizes, is_new, discount_percent } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
   const sizesArr = parseJSON(sizes, []);
 
-  // Auto-calculate minimum price from sizes
   const minPrice = sizesArr.length > 0
     ? Math.min(...sizesArr.map(s => Number(s.price) || 0))
     : 0;
 
   const r = await db.query(
-    `INSERT INTO products (name, category_id, price, description, image_url, sizes, is_new)
-     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-    [name, category_id, minPrice, description, image_url, JSON.stringify(sizesArr), is_new === 'true']
+    `INSERT INTO products (name, category_id, price, description, image_url, sizes, is_new, discount_percent)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+    [name, category_id, minPrice, description, image_url,
+     JSON.stringify(sizesArr), is_new === 'true', Number(discount_percent) || 0]
   );
   res.status(201).json(r.rows[0]);
 });
@@ -90,13 +88,10 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
   if (!ex.rows.length) return res.status(404).json({ error: 'Product not found' });
   const e = ex.rows[0];
 
-  const { name, category_id, description, sizes, is_new, is_active } = req.body;
-  const image_url = req.file
-    ? `/uploads/${req.file.filename}`
-    : e.image_url;
+  const { name, category_id, description, sizes, is_new, is_active, discount_percent } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : e.image_url;
   const sizesArr = sizes ? parseJSON(sizes, e.sizes) : e.sizes;
 
-  // Auto-calculate minimum price from sizes
   const minPrice = sizesArr.length > 0
     ? Math.min(...sizesArr.map(s => Number(s.price) || 0))
     : e.price;
@@ -104,8 +99,9 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
   const r = await db.query(
     `UPDATE products
      SET name=$1, category_id=$2, price=$3, description=$4,
-         image_url=$5, sizes=$6, is_new=$7, is_active=$8, updated_at=NOW()
-     WHERE id=$9 RETURNING *`,
+         image_url=$5, sizes=$6, is_new=$7, is_active=$8,
+         discount_percent=$9, updated_at=NOW()
+     WHERE id=$10 RETURNING *`,
     [
       name        ?? e.name,
       category_id ?? e.category_id,
@@ -113,8 +109,9 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
       description !== undefined ? description : e.description,
       image_url,
       JSON.stringify(sizesArr),
-      is_new   !== undefined ? is_new   === 'true' : e.is_new,
+      is_new    !== undefined ? is_new    === 'true' : e.is_new,
       is_active !== undefined ? is_active === 'true' : e.is_active,
+      discount_percent !== undefined ? Number(discount_percent) : (e.discount_percent || 0),
       req.params.id,
     ]
   );
