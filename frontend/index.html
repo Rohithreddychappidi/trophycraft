@@ -497,7 +497,7 @@
   font-size:0.78rem;color:var(--gray-400);
   text-decoration:line-through;margin-right:4px
 }
-.card-price-final{font-size:1.05rem;font-weight:700;color:#dc2626}
+.card-price-final{font-size:0.99rem;font-weight:700;color:#dc2626}
 .pm-original-price{
   font-size:0.85rem;color:var(--gray-400);
   text-decoration:line-through;margin-right:6px
@@ -1000,18 +1000,35 @@ if (sizes.length > 0 && sizes[0] && sizes[0].price) {
       const maxFinal = Math.round(maxP * (1 - disc/100));
       priceDisplay = `
   <div style="display:flex;flex-direction:column;gap:2px;">
-    <span class="card-price-original" style="display:block;">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <span class="card-price-final">₹${minFinal.toLocaleString('en-IN')}${minFinal !== maxFinal ? ' – ₹'+maxFinal.toLocaleString('en-IN') : ''}</span>
-      <span class="card-discount-badge">${disc}% OFF</span>
-    </div>
+    
+    <span class="card-price-original" style="display:block;">
+      ₹${minP.toLocaleString('en-IN')}
+      ${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}
+    </span>
+
+    <span class="card-price-final" style="display:block;">
+      ₹${minFinal.toLocaleString('en-IN')}
+      ${minFinal !== maxFinal ? ' – ₹'+maxFinal.toLocaleString('en-IN') : ''}
+    </span>
+
+    <span class="card-discount-badge" style="display:block;width:fit-content;">
+      ${disc}% OFF
+    </span>
+
   </div>`;
-    } else {
-      priceDisplay = `<span style="font-size:1.05rem;font-weight:700;color:var(--blue)">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>`;
-    }
-  }
 } else {
-  priceDisplay = `<span style="font-size:1.05rem;font-weight:700;color:var(--blue)">₹${Number(p.price).toLocaleString('en-IN')}</span>`;
+  priceDisplay = `
+    <span style="font-size:1.05rem;font-weight:700;color:var(--blue)">
+      ₹${minP.toLocaleString('en-IN')}
+      ${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}
+    </span>`;
+}
+}
+} else {
+  priceDisplay = `
+    <span style="font-size:1.05rem;font-weight:700;color:var(--blue)">
+      ₹${Number(p.price).toLocaleString('en-IN')}
+    </span>`;
 }
 
   const card = document.createElement('div');
