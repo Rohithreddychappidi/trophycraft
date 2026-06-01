@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=1.0">
 <title>Golden Awards – Premium Awards & Trophies</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -85,6 +85,17 @@
   .logo{font-family:var(--font-display);color:#fff;font-size:1.25rem;font-weight:700;letter-spacing:0.5px;cursor:pointer;display:flex;align-items:center;gap:8px}
   .logo-icon{width:28px;height:28px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
   .nav-links{display:flex;gap:4px}
+  .logo-img{
+  height: 48px;
+  object-fit: contain;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .logo-img{
+    height: 32px;
+  }
+}
   .nav-link{color:rgba(255,255,255,0.8);background:none;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:0.875rem;font-weight:500;transition:all 0.15s}
   .nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
   .nav-actions{display:flex;align-items:center;gap:10px}
@@ -249,8 +260,8 @@
   .filter-bar span{font-size:0.85rem;color:var(--gray-600);font-weight:500}
 
   /* FOOTER */
-  footer{background:var(--blue);color:rgba(255,255,255,0.8);padding:28px 2rem;margin-top:0}
-  .footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:24px;margin-bottom:20px}
+  footer{background:var(--blue);color:rgba(255,255,255,0.8);padding:28px 1rem;margin-top:0;overflow:hidden}
+.footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:24px;margin-bottom:20px}
   .footer-brand{font-family:var(--font-display);color:#fff;font-size:1.4rem;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .footer-logo-img{width:48px;height:48px;object-fit:contain;border-radius:50%;background:var(--gold);padding:4px}
   .footer-desc{font-size:0.82rem;line-height:1.6;opacity:0.75}
@@ -358,6 +369,73 @@
  
  .toast{position:fixed;bottom:24px;right:24px;background:var(--blue);color:#fff;padding:12px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;z-index:999;animation:fadeIn 0.2s ease;pointer-events:none}
   @media (max-width: 480px) {
+    footer { padding: 20px 16px; }
+
+  .footer-inner {
+    grid-template-columns: 1fr;   /* was 1.5fr 1fr 1fr */
+    gap: 0;
+    margin-bottom: 14px;
+  }
+
+  /* Logo row in footer */
+  .footer-brand {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+
+  .footer-logo-img {
+    width: 36px;       /* was 48px */
+    height: 36px;
+    padding: 2px;
+  }
+
+  .footer-desc {
+    font-size: 0.8rem;
+    margin-bottom: 14px;
+  }
+
+  /* Two-column links instead of three stacked */
+  .footer-inner > div:not(:first-child) {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+
+  /* Make the two link columns sit side by side */
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Wrap the two footer-col divs in a row */
+  .footer-cols-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 14px;
+    margin-top: 4px;
+  }
+
+  .footer-bottom {
+    font-size: 0.7rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+.footer-col{border-top:1px solid rgba(255,255,255,0.1);padding-top:12px}
+.contact-wrap{grid-template-columns:1fr;padding:24px 1rem;gap:20px}
+.about-grid{grid-template-columns:1fr}
+.stats-row{gap:10px}
+.hero h1{font-size:1.6rem}
+.hero p{font-size:0.9rem}
+.hero-btns{flex-direction:column;align-items:center;gap:8px}
+.btn-gold,.btn-outline-white{width:100%;max-width:260px}
+.features{grid-template-columns:1fr 1fr;gap:12px;padding:20px 1rem}
+.cart-panel{width:100%;max-width:100%}
+.modal{max-width:100%;margin:0;border-radius:var(--radius) var(--radius) 0 0}
+.modal-bg{align-items:flex-end;padding:0}
   .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   .card-img-wrap{height:130px}
   .card-body{padding:10px}
@@ -444,7 +522,7 @@
 <!-- NAV -->
 <nav>
   <div class="logo" onclick="goHome()">
-    <img src="imagelogo.png" style="height:48px;object-fit:contain;">
+    <img src="imagelogo.png" class="logo-img">
     
   </div>
   <div class="nav-links">
@@ -652,11 +730,12 @@
   <div class="footer-inner">
     <div>
       <div class="footer-brand">
-        <img src="imagelogo.png" style="height:90px;object-fit:contain;">
+        <img src="imagelogo.png" class="logo-img">
         
       </div>
       <div class="footer-desc">India's premier awards &amp; trophy destination. Quality crafted, personally delivered.</div>
     </div>
+    <div class="footer-cols-row"></div>
     <div class="footer-col">
       <h4>Products</h4>
       <a onclick="filterCat('Metal Trophy',null);showPage('products')">Metal Trophy</a>
@@ -920,9 +999,13 @@ if (sizes.length > 0 && sizes[0] && sizes[0].price) {
       const minFinal = Math.round(minP * (1 - disc/100));
       const maxFinal = Math.round(maxP * (1 - disc/100));
       priceDisplay = `
-        <span class="card-price-original">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>
-        <span class="card-price-final">₹${minFinal.toLocaleString('en-IN')}${minFinal !== maxFinal ? ' – ₹'+maxFinal.toLocaleString('en-IN') : ''}</span>
-        <span class="card-discount-badge">${disc}% OFF</span>`;
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <span class="card-price-original" style="display:block;">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="card-price-final">₹${minFinal.toLocaleString('en-IN')}${minFinal !== maxFinal ? ' – ₹'+maxFinal.toLocaleString('en-IN') : ''}</span>
+      <span class="card-discount-badge">${disc}% OFF</span>
+    </div>
+  </div>`;
     } else {
       priceDisplay = `<span style="font-size:1.05rem;font-weight:700;color:var(--blue)">₹${minP.toLocaleString('en-IN')}${minP !== maxP ? ' – ₹'+maxP.toLocaleString('en-IN') : ''}</span>`;
     }
