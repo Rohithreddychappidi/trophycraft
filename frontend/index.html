@@ -121,17 +121,47 @@ nav{background:var(--blue);padding:0 1.5rem;display:flex;align-items:center;just
 }
 
 /* ─── CATEGORY PILLS ─── */
-.cat-section{padding:20px 1.5rem 16px;background:var(--blue)}
-.cat-section h2{font-family:var(--font-display);font-size:1.1rem;color:#fff;margin-bottom:14px;font-weight:600}
-.cat-pills{display:flex;gap:10px;flex-wrap:wrap}
-.cat-pill{
-  background:rgba(255,255,255,0.1);
-  border:1.5px solid rgba(255,255,255,0.4);
-  color:#fff;
-  padding:7px 18px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.15s
+tion{padding:20px 1.5rem 16px;background:var(--blue)}
+.cat-section {
+  padding: 20px 1.5rem 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--gray-200);
 }
-.cat-pill:hover,.cat-pill.active{background:#fff;color:var(--blue);border-color:#fff}
-
+.cat-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--blue);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+.cat-pills {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  background: var(--blue);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cat-pill {
+  background: transparent;
+  border: none;
+  border-right: 2px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.8);
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 0;
+}
+.cat-pill:last-child {
+  border-right: none;
+}
+.cat-pill:hover,
+.cat-pill.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
 /* ─── PRODUCTS GRID ─── */
 .products-section{padding:16px 1rem 40px;background:var(--gray-50)}
 .section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
