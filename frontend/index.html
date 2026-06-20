@@ -67,6 +67,14 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
 }
 .float-cart-btn:hover{background:#b8821f}
 .float-cart-empty{text-align:center;padding:24px 0;color:var(--gray-400);font-size:0.82rem}
+
+/* DELIVERY BADGE */
+.card-delivery{
+  font-size:0.72rem;font-weight:600;color:#16a34a;
+  display:flex;align-items:center;gap:4px;margin-top:4px
+}
+.card-delivery svg{flex-shrink:0}
+
 .fci-qty-badge{
   background:var(--blue-light);color:var(--blue);
   border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700
@@ -1048,7 +1056,11 @@ async function loadCategories() {
 const CAT_EMOJIS = {
   'Metal Trophy':'🥇','Acrylic Award':'💎','Wood Trophy':'🪵',
   'Fiber Trophy':'🎖️','Gift':'🎁',
-  'Cricket':'🏏','Football':'⚽','Others':'🎗️'
+  'Cricket':'🏏','Football':'⚽','Others':'🎗️',
+  'Corporate Awards':'🏢','Crystal':'💠','Badminton':'🏸',
+  'Basketball':'🏀','Carrom':'🎯','Chess':'♟️',
+  'Throwball':'🎾','Kho-kho':'🏃','Karate':'🥋',
+  'Medals and Badges':'🏅','Customized awards':'✨'
 };
 
 function buildCatPills() {
@@ -1071,7 +1083,7 @@ async function loadProducts() {
   catch (e) { console.error('Failed to load products:', e); allProducts = []; }
 }
 
-const EMOJIS = {'Metal Trophy':'🏆','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'⭐','Gift':'🎁'};
+const EMOJIS = {'Metal Trophy':'🏆','Acrylic Award':'💎','Wood Trophy':'🪵','Fiber Trophy':'⭐','Gift':'🎁','Corporate Awards':'🏢','Crystal':'💠','Badminton':'🏸','Basketball':'🏀','Carrom':'🎯','Chess':'♟️','Throwball':'🎾','Kho-kho':'🏃','Karate':'🥋','Medals and Badges':'🏅','Customized awards':'✨'};
 
 function buildCard(p, gridKey) {
   const sizes = Array.isArray(p.sizes) ? p.sizes : (JSON.parse(p.sizes || '[]'));
@@ -1140,6 +1152,7 @@ if (sizes.length > 0 && sizes[0] && sizes[0].price) {
       <div class="card-cat">${p.category_name || ''}</div>
       <div class="card-name">${p.name}</div>
       <div class="card-price">${priceDisplay}</div>
+      ${p.delivery_days ? `<div class="card-delivery"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Delivered in ${p.delivery_days} day${p.delivery_days > 1 ? 's' : ''}</div>` : ''}
     </div>`;
   return card;
 }

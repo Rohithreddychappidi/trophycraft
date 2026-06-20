@@ -159,6 +159,30 @@ tr:hover td{background:var(--gray-50)}
 /* LOADING */
 .spinner{width:30px;height:30px;border:3px solid var(--blue-light);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:40px auto;display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ── MOBILE DASHBOARD ── */
+@media (max-width: 768px) {
+  body{flex-direction:column}
+  .sidebar{width:100%;min-height:auto;position:relative;flex-direction:row;flex-wrap:wrap}
+  .sidebar-nav{display:flex;flex-direction:row;overflow-x:auto;padding:8px 0}
+  .nav-item{padding:8px 12px;font-size:0.75rem;white-space:nowrap;border-left:none;border-bottom:3px solid transparent}
+  .nav-item:hover,.nav-item.active{border-left:none;border-bottom-color:var(--gold)}
+  .sidebar-footer{display:none}
+  .main{margin-left:0}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+  .section-header{flex-direction:column;align-items:flex-start;gap:10px}
+  table{font-size:0.75rem}
+  th,td{padding:8px 10px}
+  .modal{max-width:100%;margin:10px}
+  .grid-2{grid-template-columns:1fr}
+}
+@media (max-width: 480px) {
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-num{font-size:1.2rem}
+  .sidebar-logo .txt{font-size:0.85rem}
+}
+
 .empty-table{text-align:center;padding:40px;color:var(--gray-400);font-size:0.9rem}
 /* ── MESSAGE CARDS ── */
 .msg-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:18px 20px;transition:box-shadow 0.15s}
@@ -389,6 +413,10 @@ tr:hover td{background:var(--gray-50)}
         <div class="form-group">
           <label>Discount % <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(0 = no discount)</span></label>
           <input type="number" id="pm-discount" placeholder="e.g. 10" min="0" max="90" step="1" value="0">
+        </div>
+        <div class="form-group">
+          <label>Delivery Days <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(e.g. 2, 3, 5 — shown on product card)</span></label>
+          <input type="number" id="pm-delivery" placeholder="e.g. 2" min="1" max="30" step="1">
         </div>
         <!-- Price is auto-calculated from sizes below -->
         <div class="form-group" style="grid-column:1/-1">
@@ -714,7 +742,7 @@ async function loadProducts() {
           </td>
           <td><strong>${p.name}</strong>${p.is_new?'<span class="badge new" style="margin-left:6px">New</span>':''}</td>
           <td>${p.category_name || '—'}</td>
-          <td>₹${Number(p.price).toLocaleString('en-IN')}${Number(p.discount_percent) > 0 ? `<span class="badge" style="background:#fef2f2;color:#dc2626;margin-left:6px;font-size:0.68rem">${p.discount_percent}% OFF</span>` : ''}</td>
+          <td>₹${Number(p.price).toLocaleString('en-IN')}${Number(p.discount_percent) > 0 ? `<span class="badge" style="background:#fef2f2;color:#dc2626;margin-left:6px;font-size:0.68rem">${p.discount_percent}% OFF</span>` : ''}${p.delivery_days ? `<span style="font-size:0.68rem;color:#16a34a;margin-left:4px">🚚 ${p.delivery_days}d</span>` : ''}</td>
           <td style="font-size:0.78rem;color:var(--gray-600)">${sizes.map(s=>s.label||s).join(', ')||'—'}</td>
           <td><span class="badge ${p.is_active?'active':'inactive'}">${p.is_active?'Active':'Inactive'}</span></td>
           <td>
@@ -739,6 +767,7 @@ async function openProductModal(productId) {
   document.getElementById('pm-img').value   = '';
   document.getElementById('pm-img-preview').style.display = 'none';
   document.getElementById('pm-discount').value = 0;
+  document.getElementById('pm-delivery').value = '';
 
   const catSel = document.getElementById('pm-cat');
   if (!allCategories.length) {
@@ -764,6 +793,7 @@ async function openProductModal(productId) {
         prev.style.display = 'block';
       }
       document.getElementById('pm-discount').value = p.discount_percent || 0;
+      document.getElementById('pm-delivery').value = p.delivery_days || '';
       const sizes = Array.isArray(p.sizes) ? p.sizes : tryParse(p.sizes,[]);
       initSizeEditor(sizes);
     });
@@ -837,6 +867,7 @@ async function saveProduct() {
   fd.append('is_new',      document.getElementById('pm-isnew').checked);
   fd.append('is_active',   document.getElementById('pm-active').checked);
   fd.append('discount_percent', document.getElementById('pm-discount').value || 0);
+  fd.append('delivery_days', document.getElementById('pm-delivery').value || '');
   const imgFile = document.getElementById('pm-img').files[0];
   if (imgFile) fd.append('image', imgFile);
 
