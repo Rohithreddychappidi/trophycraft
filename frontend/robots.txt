@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://goldenawards.in/sitemap.xml
