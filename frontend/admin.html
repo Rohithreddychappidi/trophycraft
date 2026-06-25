@@ -123,6 +123,11 @@ tr:hover td{background:var(--gray-50)}
 .size-row-hdr span:nth-child(3){max-width:110px;width:110px}
 .add-size-btn{background:none;border:1.5px dashed var(--blue);color:var(--blue);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;width:100%;margin-top:4px}
 .add-size-btn:hover{background:var(--blue-light)}
+.cat-checkbox-item{display:flex;align-items:center;gap:6px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:6px;padding:5px 10px;cursor:pointer;transition:all 0.15s;font-size:0.82rem;user-select:none}
+.cat-checkbox-item:hover{border-color:var(--blue);background:var(--blue-light)}
+.cat-checkbox-item.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:600}
+.cat-checkbox-item input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px}
+
 
 /* ── SEARCH / FILTER BAR ── */
 .toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
@@ -406,9 +411,10 @@ tr:hover td{background:var(--gray-50)}
           <label>Product Name *</label>
           <input type="text" id="pm-name" placeholder="e.g. Gold Champion Trophy">
         </div>
-        <div class="form-group">
-          <label>Category *</label>
-          <select id="pm-cat"></select>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Categories * <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(select one or more)</span></label>
+          <div id="pm-cat-wrap" style="border:1px solid var(--gray-200);border-radius:7px;padding:10px;max-height:180px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:8px;background:#fff"></div>
+          <div id="pm-cat-selected" style="margin-top:6px;font-size:0.75rem;color:var(--blue);font-weight:600"></div>
         </div>
         <div class="form-group">
           <label>Discount % <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(0 = no discount)</span></label>
@@ -722,6 +728,36 @@ async function loadCategories() {
   } catch {}
 }
 
+function buildCatCheckboxes(selectedIds = []) {
+  const wrap = document.getElementById('pm-cat-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = allCategories.map(c => `
+    <label class="cat-checkbox-item ${selectedIds.includes(c.id) ? 'selected' : ''}" onclick="toggleCatItem(this)">
+      <input type="checkbox" value="${c.id}" ${selectedIds.includes(c.id) ? 'checked' : ''} onchange="updateCatSelected()">
+      ${c.name}
+    </label>`).join('');
+  updateCatSelected();
+}
+
+function toggleCatItem(label) {
+  const cb = label.querySelector('input');
+  cb.checked = !cb.checked;
+  label.classList.toggle('selected', cb.checked);
+  updateCatSelected();
+}
+
+function updateCatSelected() {
+  const checked = [...document.querySelectorAll('#pm-cat-wrap input:checked')];
+  const el = document.getElementById('pm-cat-selected');
+  if (el) el.textContent = checked.length > 0
+    ? `Selected: ${checked.map(c => allCategories.find(a => a.id == c.value)?.name).filter(Boolean).join(', ')}`
+    : 'No categories selected';
+}
+
+function getSelectedCatIds() {
+  return [...document.querySelectorAll('#pm-cat-wrap input:checked')].map(c => Number(c.value));
+}
+
 async function loadProducts() {
   const tbody = document.getElementById('products-body');
   tbody.innerHTML = '<tr><td colspan="7" class="empty-table"><div class="spinner"></div></td></tr>';
@@ -769,11 +805,12 @@ async function openProductModal(productId) {
   document.getElementById('pm-discount').value = 0;
   document.getElementById('pm-delivery').value = '';
 
-  const catSel = document.getElementById('pm-cat');
+  // categories loaded below
+  // Build category checkboxes
   if (!allCategories.length) {
     try { allCategories = await apiGet('/api/admin/categories'); } catch(e) {}
   }
-  catSel.innerHTML = allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  buildCatCheckboxes([]);
 
   // init 3 empty size rows
   initSizeEditor([]);
@@ -786,7 +823,10 @@ async function openProductModal(productId) {
       document.getElementById('pm-desc').value     = p.description || '';
       document.getElementById('pm-isnew').checked  = p.is_new;
       document.getElementById('pm-active').checked = p.is_active;
-      catSel.value = p.category_id;
+      // Set selected categories from junction table data
+      const cats = Array.isArray(p.categories) ? p.categories : tryParse(p.categories, []);
+      const selectedIds = cats.length > 0 ? cats.map(c => c.id) : (p.category_id ? [p.category_id] : []);
+      buildCatCheckboxes(selectedIds);
       if (p.image_url) {
         const prev = document.getElementById('pm-img-preview');
         prev.src = CONFIG.API_URL + (p.image_url.startsWith('/')?'':'/') + p.image_url;
@@ -840,8 +880,8 @@ function previewBannerImg(input) {
 
 async function saveProduct() {
   const name  = document.getElementById('pm-name').value.trim();
-  const catId = document.getElementById('pm-cat').value;
-  if (!name || !catId) { showToast('Name and category are required','error'); return; }
+  const catIds = getSelectedCatIds();
+  if (!name || !catIds.length) { showToast('Name and at least one category are required','error'); return; }
 
   // Collect sizes with price
   const rows  = document.getElementById('size-editor').querySelectorAll('.size-row');
@@ -861,7 +901,7 @@ async function saveProduct() {
 
   const fd = new FormData();
   fd.append('name',        name);
-  fd.append('category_id', catId);
+  fd.append('category_ids', JSON.stringify(catIds));
   fd.append('description', document.getElementById('pm-desc').value.trim());
   fd.append('sizes',       JSON.stringify(sizes));
   fd.append('is_new',      document.getElementById('pm-isnew').checked);

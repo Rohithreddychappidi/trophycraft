@@ -1,28 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Golden Awards – Premium Trophies, Medals & Custom Awards in Hyderabad</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="imagelogo.png">
-<link rel="icon" type="image/png" sizes="16x16" href="imagelogo.png">
-<link rel="apple-touch-icon" sizes="180x180" href="imagelogo.png">
-<meta name="description" content="Golden Awards crafts premium metal, acrylic, wood & fiber trophies, corporate awards, medals and custom-engraved awards. Pan-India delivery from Hyderabad. Bulk orders welcome.">
-<meta name="keywords" content="trophies Hyderabad, custom awards India, corporate awards, sports trophies, medals and badges, acrylic awards, crystal awards">
-<link rel="canonical" href="https://goldenawards.in/">
-
-<!-- Open Graph (for WhatsApp/Facebook link previews) -->
-<meta property="og:title" content="Golden Awards – Premium Trophies & Custom Awards">
-<meta property="og:description" content="Premium handcrafted trophies, medals, and corporate awards. Pan-India delivery, custom engraving, bulk order pricing.">
-<meta property="og:image" content="https://goldenawards.in/imagelogo.png">
-<meta property="og:url" content="https://goldenawards.in/">
-<meta property="og:type" content="website">
-<meta name="google-site-verification" content="6TC8_TJsAtXTyNOYiLClxfPs9sStQyE9H_6ivkAzjcQ" />
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Golden Awards – Premium Trophies & Custom Awards">
-<meta name="twitter:description" content="Premium handcrafted trophies, medals, and corporate awards. Pan-India delivery.">
-<meta name="twitter:image" content="https://goldenawards.in/imagelogo.png">
-
-<meta name="robots" content="index, follow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=1.0">
 <title>Golden Awards – Premium Awards & Trophies</title>
@@ -628,25 +606,6 @@ footer{
   .footer-bottom{font-size:0.7rem;flex-direction:column;align-items:center;text-align:center;gap:4px}
 }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "Golden Awards",
-  "image": "https://goldenawards.in/imagelogo.png",
-  "url": "https://goldenawards.in/",
-  "telephone": "+91-9701330640",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "3-4-656 opp. Deepak Theatre, Narayanaguda",
-    "addressLocality": "Hyderabad",
-    "postalCode": "500029",
-    "addressCountry": "IN"
-  },
-  "priceRange": "₹₹",
-  "openingHours": "Mo-Sa 10:00-18:00"
-}
-</script>
 </head>
 <body>
 
@@ -775,7 +734,7 @@ footer{
 <div class="page" id="page-about">
   <div class="page-hero">
     <h1>About Golden Awards</h1>
-    <p>India's premier destination for custom awards and trophies — crafted with passion since 2026.</p>
+    <p>India's premier destination for custom awards and trophies — crafted with passion since 2025.</p>
   </div>
   <div class="about-content">
 
@@ -788,7 +747,7 @@ footer{
       </p>
       <div style="display:flex;align-items:center;gap:12px;position:relative">
         <div style="width:36px;height:2px;background:var(--gold)"></div>
-        <span style="color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:600;letter-spacing:0.5px">Thank You, Golden Awards, Since 2026</span>
+        <span style="color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:600;letter-spacing:0.5px">Golden Awards, Since 2025</span>
       </div>
     </div>
 
@@ -895,7 +854,7 @@ footer{
       </div>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 Golden Awards. All rights reserved. | Powered by Razorpay · NeonDB · Vercel</div>
+  <div class="footer-bottom">© 2025 Golden Awards. All rights reserved. | Powered by Razorpay · NeonDB · Vercel</div>
 </footer>
 <!-- CART PANEL -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
@@ -1513,7 +1472,7 @@ function applyHomeFilters() {
   const { min, max } = getPriceRange('home');
   const cat = currentCat;
 
-  let list = cat === 'All' ? [...allProducts] : allProducts.filter(p => p.category_name === cat);
+  let list = allProducts.filter(p => productMatchesCat(p, cat));
   list = filterByPrice(list, min, max);
 
   if (sortValue === 'price_low')  list.sort((a,b) => Number(a.price) - Number(b.price));
@@ -1531,7 +1490,7 @@ function applyProductsFilters() {
   const { min, max } = getPriceRange('prod');
   const cat = currentCat2;
 
-  let list = cat === 'All' ? [...allProducts] : allProducts.filter(p => p.category_name === cat);
+  let list = allProducts.filter(p => productMatchesCat(p, cat));
   list = filterByPrice(list, min, max);
 
   if (sortValue === 'price_low')  list.sort((a,b) => Number(a.price) - Number(b.price));
@@ -1561,10 +1520,25 @@ function filterCat2(cat, btn) {
   applyProductsFilters();
 }
 
+// Helper: check if product belongs to a category (checks all categories)
+function productMatchesCat(p, cat) {
+  if (cat === 'All') return true;
+  // Check primary category
+  if (p.category_name === cat) return true;
+  // Check all categories from junction table
+  const cats = Array.isArray(p.categories) ? p.categories : [];
+  return cats.some(c => c.name === cat);
+}
+
 function handleSearch(val) {
   if (!val.trim()) { renderGrid('home-grid', currentCat, true); renderGrid('products-grid', currentCat2, false); return; }
   const q = val.toLowerCase();
-  const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q) || (p.category_name || '').toLowerCase().includes(q));
+  const filtered = allProducts.filter(p => {
+    if (p.name.toLowerCase().includes(q)) return true;
+    if ((p.category_name || '').toLowerCase().includes(q)) return true;
+    const cats = Array.isArray(p.categories) ? p.categories : [];
+    return cats.some(c => c.name.toLowerCase().includes(q));
+  });
   const hg = document.getElementById('home-grid'); const pg = document.getElementById('products-grid');
   hg.innerHTML = ''; pg.innerHTML = '';
   if (!filtered.length) {
