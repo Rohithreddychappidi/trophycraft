@@ -548,14 +548,16 @@ footer{
 
 
   /* Categories */
-  .cat-section{padding:14px 1rem 12px}
-  .cat-pill{padding:5px 12px;font-size:0.78rem}
+  .cat-section{padding:14px 0.75rem 12px}
+  .cat-pills{gap:6px;padding:0}
+  .cat-pill{padding:5px 10px;font-size:0.72rem;border-radius:20px;white-space:nowrap}
 
   /* Products */
   .products-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   .products-section{padding:12px 0.75rem 30px}
   .products-page-wrap{padding:12px 0.75rem 30px}
-  .card-img-wrap{height:130px}
+  .card-img-wrap{height:140px}
+  .card-img-wrap img{object-fit:contain;padding:4px;background:#fff}
   .card-body{padding:10px}
   .card-name{font-size:0.85rem;margin-bottom:6px}
   .card-price{font-size:0.9rem;margin-bottom:0}
@@ -564,7 +566,8 @@ footer{
 
   /* Product modal */
   .product-modal{max-height:95vh}
-  .product-modal-img{height:200px}
+  .product-modal-img{height:auto;min-height:180px;aspect-ratio:4/3}
+  .product-modal-img img{width:100%;height:100%;object-fit:contain;background:var(--blue-light)}
   .pm-name{font-size:1.2rem}
   .sort-wrap{font-size:0.78rem}
   .sort-select{padding:5px 8px;font-size:0.78rem}
@@ -655,7 +658,7 @@ footer{
   
   <div class="cat-section">
     <h2>Browse by Category</h2>
-    <div class="cat-pills" id="home-cat-pills">
+    <div class="cat-pills" id="home-cat-pills" style="max-width:100%;overflow-x:auto;flex-wrap:wrap;padding-bottom:4px">
       <button class="cat-pill active" onclick="filterCat('All',this)">All</button>
     </div>
     
@@ -913,6 +916,21 @@ footer{
       <div class="form-group-sm">
         <label>Customize Name Carving <span style="color:var(--gray-400);font-weight:400;font-size:0.78rem">(optional — name to be engraved on the trophy)</span></label>
         <input type="text" id="sh-carving" placeholder="e.g. John Smith / Team Alpha 2025" style="width:100%;box-sizing:border-box">
+      </div>
+      <!-- DELIVERY NOTICE -->
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-top:16px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <span style="font-size:1.2rem;flex-shrink:0">🚚</span>
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;color:#16a34a;margin-bottom:4px">Delivery Information</div>
+            <div style="font-size:0.78rem;color:#475569;line-height:1.6">
+              Delivery charges are applicable based on your location via <strong>Rapido, Porter, DTDC</strong> or any courier service. We will contact you after payment to confirm delivery charges.
+            </div>
+            <div style="margin-top:8px;font-size:0.78rem;color:#1a4b8c;font-weight:600">
+              📞 For delivery queries: <a href="tel:+919701330640" style="color:#1a4b8c">+91 97013 30640</a>
+            </div>
+          </div>
+        </div>
       </div>
       <button class="btn-pay" id="pay-btn" onclick="placeOrder()">Pay with Razorpay →</button>
     </div>
