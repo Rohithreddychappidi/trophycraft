@@ -430,9 +430,14 @@ tr:hover td{background:var(--gray-50)}
           <textarea id="pm-desc" placeholder="Product description…"></textarea>
         </div>
         <div class="form-group" style="grid-column:1/-1">
-          <label>Product Image</label>
-          <input type="file" id="pm-img" accept="image/*" onchange="previewImg(this)">
+          <label>Product Image 1 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(main image)</span></label>
+          <input type="file" id="pm-img" accept="image/*" onchange="previewImg(this,'pm-img-preview')">
           <img id="pm-img-preview" class="img-preview" alt="preview">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Product Image 2 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(optional — shown in slider)</span></label>
+          <input type="file" id="pm-img2" accept="image/*" onchange="previewImg(this,'pm-img2-preview')">
+          <img id="pm-img2-preview" class="img-preview" alt="preview2">
         </div>
         <div class="form-group" style="grid-column:1/-1">
           <label>Sizes &amp; Prices * <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-400)">(price per size — min price auto-set for display)</span></label>
@@ -773,7 +778,7 @@ async function loadProducts() {
         <tr>
           <td>
             ${p.image_url
-              ? `<img src="${CONFIG.API_URL}${p.image_url.startsWith('/')?'':'/'}${p.image_url}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--gray-200)">`
+              ? `<div style="position:relative;width:44px;height:44px"><img src="${CONFIG.API_URL}${p.image_url.startsWith('/')?'':'/'}${p.image_url}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--gray-200)">${p.image_url_2 ? '<span style="position:absolute;bottom:-4px;right:-4px;background:var(--blue);color:#fff;font-size:0.55rem;padding:1px 4px;border-radius:8px;font-weight:700">2</span>' : ''}</div>`
               : '<div style="width:44px;height:44px;background:var(--blue-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🏆</div>'}
           </td>
           <td><strong>${p.name}</strong>${p.is_new?'<span class="badge new" style="margin-left:6px">New</span>':''}</td>
@@ -802,6 +807,8 @@ async function openProductModal(productId) {
   document.getElementById('pm-active').checked = true;
   document.getElementById('pm-img').value   = '';
   document.getElementById('pm-img-preview').style.display = 'none';
+  document.getElementById('pm-img2').value  = '';
+  document.getElementById('pm-img2-preview').style.display = 'none';
   document.getElementById('pm-discount').value = 0;
   document.getElementById('pm-delivery').value = '';
 
@@ -831,6 +838,11 @@ async function openProductModal(productId) {
         const prev = document.getElementById('pm-img-preview');
         prev.src = CONFIG.API_URL + (p.image_url.startsWith('/')?'':'/') + p.image_url;
         prev.style.display = 'block';
+      }
+      if (p.image_url_2) {
+        const prev2 = document.getElementById('pm-img2-preview');
+        prev2.src = CONFIG.API_URL + (p.image_url_2.startsWith('/')?'':'/') + p.image_url_2;
+        prev2.style.display = 'block';
       }
       document.getElementById('pm-discount').value = p.discount_percent || 0;
       document.getElementById('pm-delivery').value = p.delivery_days || '';
@@ -863,9 +875,9 @@ function addSizeRow(key = '', label = '', price = '') {
   ed.appendChild(row);
 }
 
-function previewImg(input) {
-  const prev = document.getElementById('pm-img-preview');
-  if (input.files[0]) {
+function previewImg(input, previewId) {
+  const prev = document.getElementById(previewId || 'pm-img-preview');
+  if (input.files[0] && prev) {
     prev.src = URL.createObjectURL(input.files[0]);
     prev.style.display = 'block';
   }
@@ -910,6 +922,8 @@ async function saveProduct() {
   fd.append('delivery_days', document.getElementById('pm-delivery').value || '');
   const imgFile = document.getElementById('pm-img').files[0];
   if (imgFile) fd.append('image', imgFile);
+  const imgFile2 = document.getElementById('pm-img2').files[0];
+  if (imgFile2) fd.append('image2', imgFile2);
 
   try {
     if (editingProductId) {
