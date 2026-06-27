@@ -309,6 +309,15 @@ tion{padding:20px 1.5rem 16px;background:var(--blue)}
 .pm-qty-val{font-size:0.95rem;font-weight:700;color:var(--gray-800);min-width:26px;text-align:center}
 .pm-add-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:13px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:4px}
 .pm-add-btn:hover{background:#b8821f;transform:translateY(-1px)}
+.pm-zoom-hint{text-align:center;font-size:0.72rem;color:var(--gray-400);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:4px}
+.img-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+.img-lightbox.open{display:flex}
+.img-lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:8px;cursor:default}
+.lightbox-close{position:absolute;top:16px;right:20px;background:rgba(255,255,255,0.15);border:none;color:#fff;width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lightbox-close:hover{background:rgba(255,255,255,0.3)}
+.lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lightbox-prev{left:16px}.lightbox-next{right:16px}
+.lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,0.3)}
 
 /* ─── SORT ─── */
 .sort-wrap{display:flex;align-items:center;gap:8px}
@@ -1351,27 +1360,30 @@ function openProductModal(product) {
   document.getElementById('pm-desc').textContent  = product.description || 'Premium quality trophy/award. Customization available.';
 
   const imgEl = document.getElementById('pm-img');
-  if (product.image_url) {
-    const img1 = CONFIG.API_URL + (product.image_url.startsWith('/') ? '' : '/') + product.image_url;
-    if (product.image_url_2) {
-      const img2 = CONFIG.API_URL + (product.image_url_2.startsWith('/') ? '' : '/') + product.image_url_2;
-      imgEl.innerHTML = `
-        <div class="pm-img-slider" id="pm-slider">
-          <img src="${img1}" alt="${product.name}" class="active">
-          <img src="${img2}" alt="${product.name}">
-          <button class="pm-slider-nav pm-slider-prev" onclick="pmSlide(-1)">&#8249;</button>
-          <button class="pm-slider-nav pm-slider-next" onclick="pmSlide(1)">&#8250;</button>
-          <div class="pm-slider-dots">
-            <div class="pm-slider-dot active" onclick="pmGoSlide(0)"></div>
-            <div class="pm-slider-dot" onclick="pmGoSlide(1)"></div>
-          </div>
-        </div>`;
-    } else {
-      imgEl.innerHTML = `<img src="${img1}" alt="${product.name}">`;
-    }
+if (product.image_url) {
+  const img1 = CONFIG.API_URL + (product.image_url.startsWith('/') ? '' : '/') + product.image_url;
+  const lbImgs = [img1];
+  if (product.image_url_2) {
+    const img2 = CONFIG.API_URL + (product.image_url_2.startsWith('/') ? '' : '/') + product.image_url_2;
+    lbImgs.push(img2);
+    imgEl.innerHTML = `
+      <div class="pm-img-slider" id="pm-slider" style="cursor:zoom-in" onclick="openLightbox(window._lbImgs, _pmSlideIdx)" title="Tap to zoom">
+        <img src="${img1}" alt="${product.name}" class="active">
+        <img src="${img2}" alt="${product.name}">
+        <button class="pm-slider-nav pm-slider-prev" onclick="event.stopPropagation();pmSlide(-1)">&#8249;</button>
+        <button class="pm-slider-nav pm-slider-next" onclick="event.stopPropagation();pmSlide(1)">&#8250;</button>
+        <div class="pm-slider-dots">
+          <div class="pm-slider-dot active" onclick="event.stopPropagation();pmGoSlide(0)"></div>
+          <div class="pm-slider-dot" onclick="event.stopPropagation();pmGoSlide(1)"></div>
+        </div>
+      </div>`;
   } else {
-    imgEl.innerHTML = `<div class="pm-placeholder">${EMOJIS[product.category_name] || '🏆'}</div>`;
+    imgEl.innerHTML = `<img src="${img1}" alt="${product.name}" style="cursor:zoom-in" onclick="openLightbox(window._lbImgs,0)" title="Tap to zoom">`;
   }
+  window._lbImgs = lbImgs;
+} else {
+  imgEl.innerHTML = `<div class="pm-placeholder">${EMOJIS[product.category_name] || '🏆'}</div>`;
+}
 
   const sizesEl = document.getElementById('pm-sizes');
   sizesEl.innerHTML = '';
@@ -1453,7 +1465,36 @@ function initCardSliders() {
     slider.closest('.product-card')?.addEventListener('mouseleave', stop);
   });
 }
+// ── Lightbox ──────────────────────────────────────────────
+let _lbImages = [];
+let _lbIdx    = 0;
 
+function openLightbox(images, startIdx) {
+  _lbImages = images;
+  _lbIdx    = startIdx || 0;
+  document.getElementById('lightbox-img').src = _lbImages[_lbIdx];
+  const showNav = _lbImages.length > 1;
+  document.getElementById('lb-prev').style.display = showNav ? 'flex' : 'none';
+  document.getElementById('lb-next').style.display = showNav ? 'flex' : 'none';
+  document.getElementById('img-lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightboxDirect() {
+  document.getElementById('img-lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeLightbox(e) {
+  if (e.target === document.getElementById('img-lightbox')) closeLightboxDirect();
+}
+function lightboxNav(dir) {
+  _lbIdx = (_lbIdx + dir + _lbImages.length) % _lbImages.length;
+  document.getElementById('lightbox-img').src = _lbImages[_lbIdx];
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape')      closeLightboxDirect();
+  if (e.key === 'ArrowLeft')   lightboxNav(-1);
+  if (e.key === 'ArrowRight')  lightboxNav(1);
+});
 function closeProductModal() {
   document.getElementById('product-modal').classList.remove('open');
   _modalProduct = null;
@@ -1976,6 +2017,7 @@ function toggleFloatCart() {
     </div>
     <div class="product-modal-body">
       <div class="product-modal-img" id="pm-img"></div>
+      <div class="pm-zoom-hint">🔍 Tap image to zoom</div>
       <div class="pm-cat" id="pm-cat"></div>
       <div class="pm-name" id="pm-name"></div>
       <div class="pm-desc" id="pm-desc"></div>
@@ -2004,6 +2046,12 @@ function toggleFloatCart() {
     </div>
     <button class="float-cart-btn" onclick="openCart()">View Cart →</button>
   </div>
+</div>
+<div class="img-lightbox" id="img-lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightboxDirect()">✕</button>
+  <button class="lightbox-prev" id="lb-prev" onclick="event.stopPropagation();lightboxNav(-1)" style="display:none">&#8249;</button>
+  <img id="lightbox-img" src="" alt="Product Image">
+  <button class="lightbox-next" id="lb-next" onclick="event.stopPropagation();lightboxNav(1)" style="display:none">&#8250;</button>
 </div>
 </body>
 </html>
