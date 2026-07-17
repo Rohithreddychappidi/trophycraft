@@ -108,7 +108,8 @@ nav{background:var(--blue);padding:0 1.5rem;display:flex;align-items:center;just
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── HERO ─── */
-.hero{background:linear-gradient(135deg,rgba(26,75,140,0.42) 0%,rgba(32,96,192,0.78) 100%);color:#fff;padding:60px 2rem 50px;text-align:center;position:relative;overflow:hidden}
+.hero{background:linear-gradient(135deg,rgba(26,75,140,0.42) 0%,rgba(32,96,192,0.78) 100%);color:#fff;padding:0;text-align:center;position:relative;overflow:hidden;min-height:420px;display:flex;align-items:center;justify-content:center}
+.hero-content{padding:60px 2rem 50px;width:100%}
 .hero::before{content:'';position:absolute;top:-40px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.05)}
 .hero::after{content:'';position:absolute;bottom:-30px;left:-40px;width:160px;height:160px;border-radius:50%;background:rgba(201,146,42,0.15)}
 .hero h1{font-family:var(--font-display);font-size:2.5rem;font-weight:700;margin-bottom:12px;position:relative}
@@ -637,7 +638,8 @@ footer{
   #user-name{display:none}
 
   /* Hero */
-  .hero h1{font-size:1.6rem}
+  .hero{min-height:280px}
+.hero-content{padding:30px 1rem}
   .hero p{font-size:0.9rem}
   .hero-btns{flex-direction:column;align-items:center;gap:8px}
   .btn-gold,.btn-outline-white{width:100%;max-width:260px}
@@ -696,8 +698,8 @@ footer{
 
   /* Product modal */
   .product-modal{max-height:95vh}
-  .product-modal-img{height:auto;min-height:160px;max-height:55vw}
-  .product-modal-img img{width:100%;height:auto;object-fit:contain}
+  .product-modal-img{height:auto;min-height:180px;max-height:80vw;background:#fff}
+.product-modal-img img{width:100%;height:auto;object-fit:contain;background:#fff;padding:4px}
   .pm-name{font-size:1.2rem}
   .sort-wrap{font-size:0.78rem}
   .sort-select{padding:5px 8px;font-size:0.78rem}
@@ -778,11 +780,13 @@ footer{
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
   <div class="hero" id="hero-section">
+    <div class="hero-content">
     <h1 id="hero-title">Premium Awards & Trophies</h1>
     <p id="hero-subtitle">Celebrate achievement with handcrafted metal, acrylic, wood, and fiber trophies — customized for every occasion.</p>
     <div class="hero-btns">
       <button class="btn-gold" onclick="showPage('products')">Browse Collection</button>
       <button class="btn-outline-white" onclick="showPage('contact')">Get a Quote</button>
+    </div>
     </div>
   </div>
   
@@ -1191,8 +1195,15 @@ async function loadBanner() {
       if (b.subtitle) document.getElementById('hero-subtitle').textContent = b.subtitle;
       if (b.image_url) {
         const imgUrl = CONFIG.API_URL + (b.image_url.startsWith('/') ? '' : '/') + b.image_url;
-        document.querySelector('.hero').style.background =
-          `linear-gradient(135deg,rgba(26,75,140,0.45) 0%,rgba(32,96,192,0.40) 100%),url('${imgUrl}') center/cover no-repeat`;
+        const heroEl = document.querySelector('.hero');
+        heroEl.style.backgroundImage = `url('${imgUrl}')`;
+        heroEl.style.backgroundSize = 'cover';
+        heroEl.style.backgroundPosition = 'center';
+        heroEl.style.backgroundRepeat = 'no-repeat';
+        // Hide text over banner
+        document.getElementById('hero-title').style.display = 'none';
+        document.getElementById('hero-subtitle').style.display = 'none';
+        document.querySelector('.hero-btns').style.display = 'none';
       }
     }
   } catch {}
