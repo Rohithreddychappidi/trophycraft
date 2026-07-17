@@ -554,6 +554,69 @@ footer{
 .pg-btn:disabled{opacity:0.4;cursor:not-allowed}
 .pg-ellipsis{color:var(--gray-400);font-size:0.85rem;padding:0 4px}
 
+
+/* ─── HOME CATEGORY ROWS ─── */
+.home-cat-rows{padding:0 0 32px;background:var(--gray-50)}
+.home-cat-row{padding:20px 0 8px}
+.home-cat-row-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1rem;margin-bottom:12px;
+}
+.home-cat-row-title{
+  font-family:var(--font-display);font-size:1.15rem;
+  color:var(--gray-800);font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.home-cat-row-title span{font-size:1.3rem}
+.home-cat-row-viewall{
+  font-size:0.8rem;font-weight:600;color:var(--blue);
+  background:none;border:1px solid var(--blue);
+  padding:4px 12px;border-radius:6px;cursor:pointer;
+  transition:all 0.15s;white-space:nowrap;
+}
+.home-cat-row-viewall:hover{background:var(--blue);color:#fff}
+
+/* Scroll row wrapper */
+.hcr-scroll-wrap{position:relative}
+.hcr-scroll{
+  display:flex;gap:12px;
+  overflow-x:auto;scroll-behavior:smooth;
+  padding:4px 1rem 12px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.hcr-scroll::-webkit-scrollbar{display:none}
+.hcr-scroll .product-card{
+  flex:0 0 160px;min-width:160px;max-width:160px;
+}
+
+/* Arrow buttons */
+.hcr-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:36px;height:36px;border-radius:50%;
+  background:#fff;border:2px solid var(--blue);
+  color:var(--blue);font-size:1.2rem;
+  cursor:pointer;z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(26,75,140,0.2);
+  transition:all 0.15s;
+}
+.hcr-arrow:hover{background:var(--blue);color:#fff}
+.hcr-arrow.left{left:2px}
+.hcr-arrow.right{right:2px}
+.hcr-arrow.hidden{display:none}
+
+/* Divider between rows */
+.home-cat-row+.home-cat-row{
+  border-top:1px solid var(--gray-200);
+}
+
+/* Mobile */
+@media(max-width:480px){
+  .hcr-scroll .product-card{flex:0 0 140px;min-width:140px}
+  .home-cat-row-title{font-size:1rem}
+  .hcr-arrow{width:28px;height:28px;font-size:1rem}
+}
+
 /* ════════════════════════════════════
    MOBILE  ≤ 480px
 ════════════════════════════════════ */
@@ -753,16 +816,8 @@ footer{
     </select>
   </div>
 </div>
-  <div class="products-section">
-    <div class="section-hdr">
-  <h2>Featured Products</h2>
-  <button style="background:none;border:1px solid var(--blue);color:var(--blue);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.82rem;font-weight:600" onclick="showPage('products')">View All →</button>
-</div>
-    
-    <div class="products-grid" id="home-grid">
-      <div class="loading-wrap"><div class="spinner"></div></div>
-    </div>
-    <div class="pagination-wrap" id="home-pagination"></div>
+    <div class="home-cat-rows" id="home-cat-rows">
+    <div class="loading-wrap"><div class="spinner"></div></div>
   </div>
   <div class="features">
     <div class="feature-item"><div class="feature-icon">🛡️</div><div class="feature-title">Premium Quality</div><div class="feature-desc">Handcrafted with finest materials</div></div>
@@ -1055,9 +1110,8 @@ window.onload = () => {
   updateCartCount();
   loadCategories();
   loadProducts().then(() => {
-    renderGrid('home-grid', 'All', true);
+    buildHomeCatRows();
     renderGrid('products-grid', 'All', false);
-    // Init slider visuals
     updatePriceSlider('home');
     updatePriceSlider('prod');
   });
@@ -1689,6 +1743,109 @@ function filterByPrice(products, min, max) {
   });
 }
 
+
+// ── HOME CATEGORY ROWS ────────────────────────────────────
+const HOME_CATEGORIES = [
+  { name: 'Corporate Awards', emoji: '🏢' },
+  { name: 'Metal Trophy',     emoji: '🥇' },
+  { name: 'Fiber Trophy',     emoji: '🎖️' },
+  { name: 'Acrylic Award',    emoji: '💎' },
+  { name: 'Wood Trophy',      emoji: '🪵' },
+];
+
+function buildHomeCatRows() {
+  const wrap = document.getElementById('home-cat-rows');
+  if (!wrap || !allProducts.length) return;
+  wrap.innerHTML = '';
+
+  // Build a map: category → products (check all categories)
+  const catMap = {};
+  HOME_CATEGORIES.forEach(c => catMap[c.name] = []);
+
+  allProducts.forEach(p => {
+    HOME_CATEGORIES.forEach(c => {
+      if (productMatchesCat(p, c.name)) {
+        catMap[c.name].push(p);
+      }
+    });
+  });
+
+  // Collect products NOT in any of the 5 categories → "Others"
+  const coveredIds = new Set();
+  HOME_CATEGORIES.forEach(c => catMap[c.name].forEach(p => coveredIds.add(p.id)));
+  const othersProds = allProducts.filter(p => !coveredIds.has(p.id));
+
+  const allRows = [
+    ...HOME_CATEGORIES.map(c => ({ name: c.name, emoji: c.emoji, products: catMap[c.name] })),
+    ...(othersProds.length ? [{ name: 'Others', emoji: '🎗️', products: othersProds }] : []),
+  ].filter(r => r.products.length > 0);
+
+  allRows.forEach((row, ri) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'home-cat-row';
+    rowEl.id = `hcr-${ri}`;
+
+    const scrollId = `hcr-scroll-${ri}`;
+    rowEl.innerHTML = `
+      <div class="home-cat-row-hdr">
+        <div class="home-cat-row-title">
+          <span>${row.emoji}</span>${row.name}
+        </div>
+        <button class="home-cat-row-viewall" onclick="viewCatInProducts('${row.name.replace(/'/g,"\'")}')">
+          View All →
+        </button>
+      </div>
+      <div class="hcr-scroll-wrap">
+        <button class="hcr-arrow left hidden" id="hcr-left-${ri}" onclick="hcrScroll(${ri},-1)">&#8249;</button>
+        <div class="hcr-scroll" id="${scrollId}"></div>
+        <button class="hcr-arrow right" id="hcr-right-${ri}" onclick="hcrScroll(${ri},1)">&#8250;</button>
+      </div>`;
+
+    wrap.appendChild(rowEl);
+
+    const scrollEl = document.getElementById(scrollId);
+    row.products.forEach(p => {
+      const card = buildCard(p, 'hg');
+      // Override click: go to products page and open modal
+      card.onclick = () => { viewCatInProducts(row.name); setTimeout(() => openProductModal(p), 150); };
+      scrollEl.appendChild(card);
+    });
+
+    // Update arrow visibility on scroll
+    scrollEl.addEventListener('scroll', () => updateHcrArrows(ri, scrollEl));
+    updateHcrArrows(ri, scrollEl);
+  });
+
+  if (typeof initCardSliders === 'function') initCardSliders();
+}
+
+function updateHcrArrows(ri, scrollEl) {
+  const leftBtn  = document.getElementById(`hcr-left-${ri}`);
+  const rightBtn = document.getElementById(`hcr-right-${ri}`);
+  if (!leftBtn || !rightBtn) return;
+  leftBtn.classList.toggle('hidden',  scrollEl.scrollLeft <= 10);
+  rightBtn.classList.toggle('hidden', scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 10);
+}
+
+function hcrScroll(ri, dir) {
+  const el = document.getElementById(`hcr-scroll-${ri}`);
+  if (el) el.scrollBy({ left: dir * 520, behavior: 'smooth' });
+}
+
+function viewCatInProducts(catName) {
+  currentCat2 = catName;
+  showPage('products');
+  setTimeout(() => {
+    // Click the matching cat pill
+    document.querySelectorAll('#products-cat-pills-bar .cat-pill, #products-cat-pills .cat-pill').forEach(b => {
+      b.classList.remove('active');
+      const txt = b.textContent.trim();
+      if (catName === 'All' ? txt === 'All' : txt.includes(catName)) b.classList.add('active');
+    });
+    applyProductsFilters();
+  }, 100);
+}
+
 function renderPagination(wrapId, total, page, onPageClick) {
   const wrap = document.getElementById(wrapId);
   if (!wrap) return;
@@ -1711,26 +1868,7 @@ function renderPagination(wrapId, total, page, onPageClick) {
 function goHomePage(p) { currentPage.home=p; applyHomeFilters(); window.scrollTo({top:document.getElementById('home-grid').offsetTop-80,behavior:'smooth'}); }
 function goProdPage(p) { currentPage.prod=p; applyProductsFilters(); window.scrollTo({top:document.getElementById('products-grid').offsetTop-80,behavior:'smooth'}); }
 
-function applyHomeFilters() {
-  const sortValue = document.getElementById('home-sort-select').value;
-  const { min, max } = getPriceRange('home');
-  const cat = currentCat;
-
-  let list = allProducts.filter(p => productMatchesCat(p, cat));
-  list = filterByPrice(list, min, max);
-
-  if (sortValue === 'price_low')  list.sort((a,b) => Number(a.price) - Number(b.price));
-  else if (sortValue === 'price_high') list.sort((a,b) => Number(b.price) - Number(a.price));
-  else if (sortValue === 'newest') list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-  const grid = document.getElementById('home-grid');
-  grid.innerHTML = '';
-  if (!list.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products in this range</p></div>'; renderPagination('home-pagination',0,1,'goHomePage'); return; }
-  const pageH = currentPage.home; const startH = (pageH-1)*PAGE_SIZE;
-  list.slice(startH, startH+PAGE_SIZE).forEach(p => grid.appendChild(buildCard(p,'hg')));
-  initCardSliders();
-  renderPagination('home-pagination', list.length, pageH, 'goHomePage');
-}
+function applyHomeFilters() { buildHomeCatRows(); }
 
 function applyProductsFilters() {
   const sortValue = document.getElementById('sort-select').value;
@@ -1794,13 +1932,13 @@ function handleSearch(val) {
     const cats = Array.isArray(p.categories) ? p.categories : [];
     return cats.some(c => c.name.toLowerCase().includes(q));
   });
-  const hg = document.getElementById('home-grid'); const pg = document.getElementById('products-grid');
-  hg.innerHTML = ''; pg.innerHTML = '';
+  const pg = document.getElementById('products-grid');
+  pg.innerHTML = '';
   if (!filtered.length) {
     const msg = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No products match your search</p></div>';
-    hg.innerHTML = msg; pg.innerHTML = msg; return;
+    pg.innerHTML = msg; return;
   }
-  filtered.slice(0, 6).forEach(p => hg.appendChild(buildCard(p, 'hg')));
+  // home rows rebuilt on search below
   filtered.forEach(p => pg.appendChild(buildCard(p, 'pg')));
 }
 
@@ -1811,7 +1949,7 @@ function showPage(p) {
   const navBtn = document.getElementById('nav-' + p);
   if (navBtn) navBtn.classList.add('active');
   window.scrollTo(0, 0);
-  if (p === 'products') renderGrid('products-grid', currentCat2, false);
+  if (p === 'products') { currentPage.prod=1; applyProductsFilters(); }
   if (p === 'myorders') loadMyOrders();
   renderFloatCart();
 }
